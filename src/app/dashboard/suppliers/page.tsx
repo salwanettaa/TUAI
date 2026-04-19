@@ -1,12 +1,15 @@
+
 "use client"
 
 import * as React from "react"
-import { Search, MapPin, Phone, Navigation, Star, Loader2, Info, Navigation2, Sparkles } from "lucide-react"
+import { Search, MapPin, Phone, Navigation, Loader2, Info, Navigation2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { findSuppliers, type SupplierFinderOutput } from "@/ai/flows/supplier-finder-flow"
 import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
 
 export default function SuppliersPage() {
   const [query, setQuery] = React.useState("")
@@ -242,8 +245,4 @@ export default function SuppliersPage() {
       </div>
     </div>
   )
-}
-
-function cn(...classes: any[]) {
-  return classes.filter(Boolean).join(' ');
 }

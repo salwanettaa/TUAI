@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -6,13 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { generateNewsArticle, type NewsAnalysisOutput } from "@/ai/flows/news-analysis-flow"
 import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
 
 export default function NewsPage() {
   const [article, setArticle] = React.useState<NewsAnalysisOutput | null>(null)
   const [loading, setLoading] = React.useState(true)
   const { toast } = useToast()
 
-  const fetchArticle = async (topic: string = "Iran-US Tensions and Malaysia Food Security") => {
+  const fetchArticle = async (topic: string = "Iran-US Tensions impact on Malaysian Food Security and Palm Oil Supply") => {
     setLoading(true)
     try {
       const data = await generateNewsArticle({ topic })
@@ -99,7 +101,6 @@ export default function NewsPage() {
             </CardHeader>
             <CardContent className="px-8 md:px-12 pb-12">
               <div className="prose prose-slate max-w-none prose-headings:font-headline prose-headings:font-bold prose-p:text-slate-600 prose-p:leading-loose text-lg">
-                {/* Simplified markdown display */}
                 {article.articleBody.split('\n').map((line, i) => (
                   <p key={i} className="mb-4">{line.replace(/#/g, '')}</p>
                 ))}

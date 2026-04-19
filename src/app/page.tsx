@@ -1,4 +1,3 @@
-
 'use server';
 
 import * as React from 'react';
@@ -6,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Sprout, ShieldCheck, MapPin, Zap, ArrowRight, MessageCircle, ClipboardList, BarChart3, Globe, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { 
   Dialog, 
   DialogContent, 
@@ -17,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 
 export default async function LandingPage() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'hero-farm');
+  const heroImageUrl = "https://up.yimg.com/ib/th/id/OIP.oq5bK_GODckYtP3oH58TOwHaEZ?pid=Api&rs=1&c=1&qlt=95&w=171&h=101";
 
   return (
     <div className="flex flex-col min-h-screen bg-white selection:bg-primary/20 scroll-smooth">
@@ -86,17 +84,15 @@ export default async function LandingPage() {
 
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-emerald-200/20 rounded-[40px] blur-2xl group-hover:blur-3xl transition-all opacity-70" />
-              <div className="relative aspect-[4/5] lg:aspect-square h-[500px] lg:h-[650px] w-full rounded-[32px] overflow-hidden shadow-2xl border-8 border-white">
-                {heroImage && (
-                  <Image
-                    src={heroImage.imageUrl}
-                    alt={heroImage.description}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    priority
-                    unoptimized={true}
-                  />
-                )}
+              <div className="relative aspect-video w-full rounded-[32px] overflow-hidden shadow-2xl border-8 border-white">
+                <Image
+                  src={heroImageUrl}
+                  alt="Lush green farm fields"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  priority
+                  unoptimized={true}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 
                 {/* Floating UI Element */}

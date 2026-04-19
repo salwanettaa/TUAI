@@ -1,11 +1,12 @@
 /**
  * Server-side utility for sending emails via Brevo API.
+ * This file uses environment variables to prevent leaking secrets.
  */
 export async function sendEmailOtp(toEmail: string, otp: string) {
-  // API key is now retrieved from environment variables for security.
+  // API key is retrieved from environment variables for security.
   const apiKey = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'ericksurbakti39@gmail.com';
-  const senderName = 'TUAI - Your PlantBot Friends';
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'no-reply@tuai.my';
+  const senderName = 'TUAI Agriculture';
 
   if (!apiKey) {
     console.warn('BREVO_API_KEY is not set. Email delivery will be skipped in prototype mode.');

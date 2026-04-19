@@ -31,9 +31,10 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar"
 
+// Standardized nav item titles to prevent hydration mismatch
 const navItems = [
   {
-    title: "Dashboard",
+    title: "Overview",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
@@ -78,7 +79,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [mounted, setMounted] = React.useState(false)
 
-  // Hydration safety: ensure component is mounted before rendering dynamic parts
+  // Ensure client-side rendering for hydration safety
   React.useEffect(() => {
     setMounted(true)
   }, [])
@@ -87,7 +88,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      {/* Desktop Sidebar */}
       <Sidebar collapsible="icon" className="hidden md:flex border-r border-sidebar-border bg-sidebar">
         <SidebarHeader className="h-20 flex items-center px-6">
           <Link href="/" className="flex items-center gap-2 font-headline font-bold text-2xl text-sidebar-primary">
@@ -147,7 +147,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </div>
             <div className="hidden md:block h-6 w-[1px] bg-slate-200 mx-4" />
             <h1 className="font-headline font-bold text-base md:text-lg text-slate-800 hidden sm:block">
-              {navItems.find(item => item.href === pathname)?.title || "Dashboard"}
+              {navItems.find(item => item.href === pathname)?.title || "Overview"}
             </h1>
           </div>
           <div className="flex items-center gap-3 md:gap-4">
@@ -165,7 +165,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
 
-        {/* Mobile Bottom Navigation */}
         <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white/95 backdrop-blur-xl border-t flex md:hidden z-50 px-1 pb-safe-area-inset-bottom shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
           {navItems.slice(0, 5).map((item) => (
             <Link 
@@ -185,7 +184,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               )}>
                 <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-primary" : "text-slate-400")} />
               </div>
-              <span className={cn("text-[9px] font-black uppercase tracking-tighter transition-opacity", pathname === item.href ? "opacity-100" : "opacity-60")}>
+              <span className={cn("text-[9px] font-black uppercase tracking-tighter", pathname === item.href ? "opacity-100" : "opacity-60")}>
                 {item.title}
               </span>
             </Link>
@@ -206,7 +205,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             )}>
               <ClipboardList className={cn("h-5 w-5", pathname === "/dashboard/records" ? "text-primary" : "text-slate-400")} />
             </div>
-            <span className={cn("text-[9px] font-black uppercase tracking-tighter transition-opacity", pathname === "/dashboard/records" ? "opacity-100" : "opacity-60")}>
+            <span className={cn("text-[9px] font-black uppercase tracking-tighter", pathname === "/dashboard/records" ? "opacity-100" : "opacity-60")}>
               Records
             </span>
           </Link>

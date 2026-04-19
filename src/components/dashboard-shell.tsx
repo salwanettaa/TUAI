@@ -85,7 +85,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             <div className="h-10 w-10 bg-sidebar-primary rounded-xl flex items-center justify-center shrink-0 shadow-lg group-hover:rotate-12 transition-transform">
               <Sprout className="h-6 w-6 text-sidebar-primary-foreground" />
             </div>
-            <span className="group-data-[collapsible=icon]:hidden tracking-tighter">TUAI</span>
+            <span className="group-data-[collapsible=icon]:hidden tracking-tighter uppercase font-black text-lg">TUAI</span>
           </Link>
         </SidebarHeader>
         <SidebarContent className="px-3 py-6 no-scrollbar">
@@ -132,7 +132,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3">
             <SidebarTrigger className="text-primary hover:bg-primary/5 rounded-xl h-10 w-10" />
             <div className="flex items-center gap-2 sm:hidden">
-              <span className="font-headline font-bold text-xl text-primary tracking-tighter">TUAI</span>
+              <span className="font-headline font-bold text-xl text-primary tracking-tighter uppercase font-black">TUAI</span>
             </div>
           </div>
 

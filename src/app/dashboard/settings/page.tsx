@@ -38,7 +38,6 @@ export default function SettingsPage() {
     
     setIsSaving(true)
     try {
-      // Must include the 'id' field to satisfy Firestore Security Rules
       await setDoc(doc(db, "users", user.uid), {
         id: user.uid,
         geminiApiKey: apiKey.trim(),

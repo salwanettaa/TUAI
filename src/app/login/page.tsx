@@ -1,14 +1,15 @@
+
 "use client"
 
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Sprout, Mail, ArrowRight, Loader2, KeyRound, UserPlus, LogIn, User, Phone, Calendar, Eye, EyeOff, ChevronLeft } from "lucide-react"
+import { Sprout, Mail, ArrowRight, Loader2, KeyRound, UserPlus, LogIn, User, Phone, Calendar, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAuth, useFirestore } from "@/firebase"
 import { 
   signInWithEmailAndPassword, 
@@ -19,6 +20,7 @@ import { doc, setDoc, serverTimestamp } from "firebase/firestore"
 import { useToast } from "@/hooks/use-toast"
 
 export default function LoginPage() {
+  const [mounted, setMounted] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const [mode, setMode] = React.useState<"login" | "register">("login")
   const [showPassword, setShowPassword] = React.useState(false)
@@ -36,6 +38,10 @@ export default function LoginPage() {
   const db = useFirestore()
   const { toast } = useToast()
 
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }))
   }
@@ -46,14 +52,11 @@ export default function LoginPage() {
     
     try {
       if (mode === "register") {
-        // 1. Create User in Firebase Auth
         const credential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
         const user = credential.user
 
-        // 2. Set Display Name
         await updateProfile(user, { displayName: formData.fullName })
 
-        // 3. Create User Profile in Firestore
         const userProfile = {
           id: user.uid,
           email: formData.email,
@@ -72,7 +75,6 @@ export default function LoginPage() {
           description: "Welcome to the TUAI family. Redirecting...",
         })
       } else {
-        // Login Flow
         await signInWithEmailAndPassword(auth, formData.email, formData.password)
         toast({
           title: "Welcome Back!",
@@ -96,6 +98,8 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
+
+  if (!mounted) return null
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-50 selection:bg-primary/20 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
@@ -203,9 +207,9 @@ export default function LoginPage() {
 
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center ml-1">
-                    <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-slate-500">Password</Label>
+                    <Label htmlFor="password" suppressHydrationWarning className="text-xs font-bold uppercase tracking-wider text-slate-500">Password</Label>
                     {mode === "login" && (
-                      <button type="button" className="text-[10px] font-bold text-primary hover:underline">Forgot?</button>
+                      <button type="button" suppressHydrationWarning className="text-[10px] font-bold text-primary hover:underline">Forgot?</button>
                     )}
                   </div>
                   <div className="relative">
@@ -248,10 +252,6 @@ export default function LoginPage() {
             </Link>
           </CardFooter>
         </Card>
-        
-        <div className="mt-8 text-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
-          SECURE AES-256 ENCRYPTED AUTHENTICATION
-        </div>
       </div>
     </div>
   )

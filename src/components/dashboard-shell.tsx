@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -11,8 +12,7 @@ import {
   ClipboardList, 
   LayoutDashboard,
   LogOut,
-  ChevronRight,
-  Menu
+  User
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -37,27 +37,27 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Disease Intelligence",
+    title: "Scans",
     href: "/dashboard/disease-scan",
     icon: Sprout,
   },
   {
-    title: "Risk Advisor",
+    title: "Risk",
     href: "/dashboard/risk-intel",
     icon: ShieldAlert,
   },
   {
-    title: "Farmer Copilot",
+    title: "Copilot",
     href: "/dashboard/chat",
     icon: MessageSquare,
   },
   {
-    title: "Supplier Finder",
+    title: "Suppliers",
     href: "/dashboard/suppliers",
     icon: MapPin,
   },
   {
-    title: "Crop Records",
+    title: "Records",
     href: "/dashboard/records",
     icon: ClipboardList,
   },
@@ -68,7 +68,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
+      {/* Desktop Sidebar */}
+      <Sidebar collapsible="icon" className="hidden md:flex border-r border-sidebar-border bg-sidebar">
         <SidebarHeader className="h-16 flex items-center px-6">
           <Link href="/" className="flex items-center gap-2 font-headline font-bold text-xl text-sidebar-primary">
             <Sprout className="h-6 w-6" />
@@ -110,28 +111,50 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset>
+
+      <SidebarInset className="pb-20 md:pb-0">
         <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
           <div className="flex items-center gap-2">
-            <SidebarTrigger className="-ml-1" />
-            <div className="h-4 w-[1px] bg-border mx-2" />
+            <SidebarTrigger className="hidden md:flex -ml-1" />
+            <div className="md:hidden">
+              <Sprout className="h-6 w-6 text-primary" />
+            </div>
+            <div className="hidden md:block h-4 w-[1px] bg-border mx-2" />
             <h1 className="font-headline font-semibold text-lg text-primary">
               {navItems.find(item => item.href === pathname)?.title || "Dashboard"}
             </h1>
           </div>
           <div className="flex items-center gap-4">
-             <div className="hidden md:flex flex-col items-end">
-               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Region</span>
-               <span className="text-sm font-semibold">Selangor, Malaysia</span>
+             <div className="hidden sm:flex flex-col items-end">
+               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Region</span>
+               <span className="text-xs font-bold">Selangor, MY</span>
              </div>
-             <Button variant="outline" size="sm" className="rounded-full px-4 border-primary text-primary hover:bg-primary/10">
-               Support
+             <Button variant="ghost" size="icon" className="rounded-full bg-accent/50 md:bg-transparent">
+               <User className="h-5 w-5" />
              </Button>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#F0F4F6]">
+
+        <main className="flex-1 p-4 md:p-8 bg-[#F0F4F6]">
           {children}
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t flex md:hidden z-50 px-4">
+          {navItems.map((item) => (
+            <Link 
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex-1 flex flex-col items-center justify-center gap-1 transition-colors",
+                pathname === item.href ? "text-primary" : "text-muted-foreground"
+              )}
+            >
+              <item.icon className="h-5 w-5" />
+              <span className="text-[10px] font-bold">{item.title}</span>
+            </Link>
+          ))}
+        </nav>
       </SidebarInset>
     </SidebarProvider>
   )

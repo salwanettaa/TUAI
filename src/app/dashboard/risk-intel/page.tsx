@@ -1,13 +1,24 @@
 "use client"
 
 import * as React from "react"
-import { ShieldAlert, TrendingDown, Globe, BarChart3, ArrowRight, Loader2, AlertTriangle, Sparkles } from "lucide-react"
+import { ShieldAlert, Globe, BarChart3, Loader2, AlertTriangle, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { riskIntel, type RiskIntelOutput } from "@/ai/flows/risk-intel-flow"
 
+const INITIAL_INTEL: RiskIntelOutput = {
+  alertLevel: "Medium",
+  potentialImpactSummary: "Malaysia's agricultural sector is currently facing moderate risk due to global fuel price fluctuations and export quotas in China for urea production. Local supply chains for Padi are stable but costs are increasing.",
+  recommendedActions: [
+    "Pre-order essential fertilizers for the next planting cycle.",
+    "Adopt soil moisture sensors to reduce irrigation costs.",
+    "Diversify short-term crops to maintain cash flow.",
+    "Monitor federal policy updates on fuel subsidies."
+  ]
+}
+
 export default function RiskIntelPage() {
-  const [intel, setIntel] = React.useState<RiskIntelOutput | null>(null)
+  const [intel, setIntel] = React.useState<RiskIntelOutput>(INITIAL_INTEL)
   const [loading, setLoading] = React.useState(false)
 
   const fetchIntel = async () => {
@@ -36,7 +47,7 @@ export default function RiskIntelPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 pb-32">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
@@ -44,117 +55,95 @@ export default function RiskIntelPage() {
             Supply Chain Intelligence
           </div>
           <h2 className="text-3xl font-headline font-bold text-primary">Risk Intel & Shock Prediction</h2>
-          <p className="text-muted-foreground">Gemini Pro analyzing global stressors affecting Malaysia farming.</p>
+          <p className="text-muted-foreground">Regional stressors and global impacts affecting local farming.</p>
         </div>
+        <Button 
+          onClick={fetchIntel}
+          className="h-12 px-8 rounded-xl bg-primary text-white font-bold shadow-lg active:scale-95 transition-all"
+          disabled={loading}
+        >
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
+          Update Global Risk Scan
+        </Button>
       </div>
 
-      {!intel && !loading && (
-        <Card className="rounded-[2.5rem] border-2 border-dashed border-primary/20 bg-white/50 p-16 text-center space-y-8">
-          <div className="h-24 w-24 bg-primary/10 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-inner">
-            <ShieldAlert className="h-12 w-12 text-primary" />
+      <div className={cn("grid lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-8 duration-700", loading && "opacity-50 pointer-events-none")}>
+        <Card className="lg:col-span-2 rounded-[2rem] border-none shadow-xl overflow-hidden bg-white">
+          <div className={`h-3 ${alertColors[intel.alertLevel]}`} />
+          <CardHeader className="bg-white p-8 pb-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="font-headline font-bold text-2xl">Regional Risk Assessment</CardTitle>
+              <div className={`px-4 py-1.5 rounded-full text-white text-sm font-bold flex items-center gap-2 ${alertColors[intel.alertLevel]}`}>
+                <AlertTriangle className="h-4 w-4" />
+                {intel.alertLevel} Alert
+              </div>
+            </div>
+            <CardDescription className="text-base mt-2">
+              Analysis based on recent geopolitical shifts and commodity market fluctuations.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="bg-white p-8 pt-4 space-y-8">
+            <div className="p-6 rounded-2xl bg-[#F0F4F6] border-l-4 border-l-primary space-y-3">
+              <h4 className="font-bold flex items-center gap-2 text-primary">
+                <ShieldAlert className="h-5 w-5" />
+                Impact Summary
+              </h4>
+              <p className="text-muted-foreground leading-relaxed font-medium">{intel.potentialImpactSummary}</p>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="font-headline font-bold text-lg">Preventative Actions for Farmers</h4>
+              <div className="grid md:grid-cols-2 gap-4">
+                {intel.recommendedActions.map((action, i) => (
+                  <div key={i} className="flex gap-3 p-4 rounded-xl bg-white border hover:border-primary transition-colors shadow-sm">
+                    <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold text-xs">
+                      {i + 1}
+                    </div>
+                    <p className="text-sm font-bold text-slate-700 leading-snug">{action}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+          <div className="bg-slate-50 p-6 flex items-center justify-between border-t">
+             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Verified TUAI Intelligence</span>
+             <Button variant="ghost" size="sm" className="rounded-xl font-bold text-primary hover:bg-primary/5" onClick={fetchIntel}>Manual Scan</Button>
           </div>
-          <div className="max-w-md mx-auto space-y-3">
-            <h3 className="text-2xl font-bold text-slate-900">Start Global Risk Scan</h3>
-            <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
-              Trigger the AI to scalp global trade data, shipping routes, and commodity market shocks to assess your farm's risk profile.
-            </p>
-          </div>
-          <Button 
-            onClick={fetchIntel}
-            className="h-16 px-12 rounded-2xl bg-primary text-white text-lg font-bold shadow-2xl shadow-primary/20 active:scale-95 transition-all"
-          >
-            <Sparkles className="h-5 w-5 mr-3" />
-            Run Risk Assessment
-          </Button>
         </Card>
-      )}
 
-      {loading && (
-        <div className="flex flex-col items-center justify-center min-h-[40vh] gap-6 bg-white rounded-[2.5rem] border animate-pulse">
-          <Loader2 className="h-16 w-16 animate-spin text-primary opacity-30" />
-          <p className="text-muted-foreground font-black uppercase tracking-widest text-xs">AI Scalping Trade Data...</p>
-        </div>
-      )}
-
-      {intel && !loading && (
-        <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <Card className="lg:col-span-2 rounded-3xl border-none shadow-xl overflow-hidden">
-            <div className={`h-3 ${alertColors[intel.alertLevel]}`} />
-            <CardHeader className="bg-white">
-              <div className="flex items-center justify-between">
-                <CardTitle className="font-headline font-bold text-2xl">Regional Risk Assessment</CardTitle>
-                <div className={`px-4 py-1.5 rounded-full text-white text-sm font-bold flex items-center gap-2 ${alertColors[intel.alertLevel]}`}>
-                  <AlertTriangle className="h-4 w-4" />
-                  {intel.alertLevel} Alert
-                </div>
-              </div>
-              <CardDescription className="text-base mt-2">
-                Based on recent geopolitical shifts and commodity market fluctuations.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="bg-white p-8 space-y-8">
-              <div className="p-6 rounded-2xl bg-[#F0F4F6] border-l-4 border-l-primary space-y-3">
-                <h4 className="font-bold flex items-center gap-2">
-                  <ShieldAlert className="h-5 w-5 text-primary" />
-                  Impact Summary
-                </h4>
-                <p className="text-muted-foreground leading-relaxed">{intel.potentialImpactSummary}</p>
-              </div>
-
-              <div className="space-y-4">
-                <h4 className="font-headline font-bold text-lg">Preventative Actions for Farmers</h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {intel.recommendedActions.map((action, i) => (
-                    <div key={i} className="flex gap-3 p-4 rounded-xl bg-white border hover:border-primary transition-colors">
-                      <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold text-xs">
-                        {i + 1}
+        <div className="space-y-6">
+           <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden bg-white">
+             <CardHeader className="bg-primary text-white p-6 pb-6">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <BarChart3 className="h-5 w-5" />
+                  Live Market Shocks
+                </CardTitle>
+             </CardHeader>
+             <CardContent className="p-6">
+                <div className="space-y-6">
+                  {[
+                    { label: "Fertilizer (NPK)", price: "RM 820/t", trend: "up", change: "+12%" },
+                    { label: "Diesel fuel", price: "RM 2.15/L", trend: "stable", change: "0%" },
+                    { label: "Padi Premium", price: "RM 1.45/kg", trend: "up", change: "+4%" }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between pb-4 border-b last:border-0 last:pb-0">
+                      <div>
+                        <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">{item.label}</div>
+                        <div className="text-xl font-headline font-bold text-slate-800">{item.price}</div>
                       </div>
-                      <p className="text-sm font-medium leading-snug">{action}</p>
+                      <div className={`text-[10px] font-black px-3 py-1 rounded-full ${item.trend === 'up' ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-500'}`}>
+                        {item.change}
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            </CardContent>
-            <div className="bg-accent/10 p-6 flex items-center justify-between border-t">
-               <span className="text-xs font-bold text-muted-foreground uppercase">Verified Intelligence</span>
-               <Button variant="outline" size="sm" className="rounded-xl font-bold" onClick={fetchIntel}>Re-run Scan</Button>
-            </div>
-          </Card>
-
-          <div className="space-y-6">
-             <Card className="rounded-3xl border-none shadow-xl overflow-hidden">
-               <CardHeader className="bg-primary text-white pb-6">
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5" />
-                    Market Prices
-                  </CardTitle>
-               </CardHeader>
-               <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {[
-                      { label: "Fertilizer (NPK)", price: "RM 820/t", trend: "up", change: "+12%" },
-                      { label: "Diesel fuel", price: "RM 2.15/L", trend: "stable", change: "0%" },
-                      { label: "Padi Premium", price: "RM 1.45/kg", trend: "up", change: "+4%" }
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between pb-4 border-b last:border-0 last:pb-0">
-                        <div>
-                          <div className="text-xs font-bold text-muted-foreground uppercase">{item.label}</div>
-                          <div className="text-lg font-headline font-bold">{item.price}</div>
-                        </div>
-                        <div className={`text-xs font-bold px-2 py-1 rounded-full ${item.trend === 'up' ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-500'}`}>
-                          {item.change}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button className="w-full mt-6 bg-[#F0F4F6] text-primary hover:bg-primary hover:text-white rounded-xl font-bold transition-all">
-                    Full Market Analysis
-                  </Button>
-               </CardContent>
-             </Card>
-          </div>
+                <Button className="w-full mt-8 bg-slate-100 text-primary hover:bg-primary hover:text-white rounded-xl h-12 font-bold transition-all shadow-sm">
+                  Full Market Analysis
+                </Button>
+             </CardContent>
+           </Card>
         </div>
-      )}
+      </div>
     </div>
   )
 }

@@ -23,7 +23,7 @@ export default function NewsPage() {
   const fetchArticle = async (topic: string = "Iran-US Tensions impact on Malaysian Food Security and Palm Oil Supply") => {
     setLoading(true)
     try {
-      const data = await generateNewsArticle({ topic })
+      const data = await generateNewsArticle({ topic, region: "Malaysia" })
       setArticle(data)
     } catch (error) {
       toast({

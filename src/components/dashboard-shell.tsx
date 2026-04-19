@@ -2,18 +2,21 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { 
-  Sprout, 
-  ShieldAlert, 
-  MessageSquare, 
-  MapPin, 
-  ClipboardList, 
+import { usePathname, useRouter } from "next/navigation"
+import { useAuth, useUser } from "@/firebase"
+import { signOut } from "firebase/auth"
+import {
+  Sprout,
+  ShieldAlert,
+  MessageSquare,
+  MapPin,
+  ClipboardList,
   LayoutDashboard,
   LogOut,
   User,
   Newspaper,
-  Compass
+  Compass,
+  Loader2
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -77,14 +80,46 @@ const navItems = [
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const auth = useAuth()
+  const { user, isUserLoading, userError } = useUser()
   const [mounted, setMounted] = React.useState(false)
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false)
 
   // Ensure client-side rendering for hydration safety
   React.useEffect(() => {
     setMounted(true)
   }, [])
 
-  if (!mounted) return null
+  // Redirect to login if unauthenticated
+  React.useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push("/login")
+    }
+  }, [user, isUserLoading, router])
+
+  const handleLogout = React.useCallback(async () => {
+    if (!user || isLoggingOut) return
+
+    try {
+      setIsLoggingOut(true)
+      await signOut(auth)
+      router.replace("/login")
+    } catch (error) {
+      console.error("Logout failed:", error)
+      setIsLoggingOut(false)
+    }
+  }, [auth, user, isLoggingOut, router])
+
+  if (!mounted || isUserLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (userError || !user) return null
 
   return (
     <SidebarProvider>
@@ -107,8 +142,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                   tooltip={item.title}
                   className={cn(
                     "h-12 rounded-xl transition-all duration-200 px-4",
-                    pathname === item.href 
-                      ? "bg-sidebar-accent text-sidebar-primary shadow-sm" 
+                    pathname === item.href
+                      ? "bg-sidebar-accent text-sidebar-primary shadow-sm"
                       : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
                   )}
                 >
@@ -125,10 +160,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild className="h-12 rounded-xl text-sidebar-foreground/60 hover:text-destructive hover:bg-destructive/10">
-                <Link href="/login">
+                <button type="button" onClick={handleLogout} disabled={isLoggingOut}>
                   <LogOut className="h-5 w-5" />
-                  <span className="font-medium">Logout</span>
-                </Link>
+                  <span className="font-medium">{isLoggingOut ? "Logging out..." : "Logout"}</span>
+                </button>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -151,13 +186,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </h1>
           </div>
           <div className="flex items-center gap-3 md:gap-4">
-             <div className="hidden xs:flex flex-col items-end leading-none">
-               <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Region</span>
-               <span className="text-xs md:text-sm font-bold text-slate-700">Selangor, MY</span>
-             </div>
-             <Button variant="ghost" size="icon" className="rounded-xl bg-slate-100 text-primary h-9 w-9">
-               <User className="h-4 w-4 md:h-5 md:w-5" />
-             </Button>
+            <div className="hidden xs:flex flex-col items-end leading-none">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Region</span>
+              <span className="text-xs md:text-sm font-bold text-slate-700">Selangor, MY</span>
+            </div>
+            <Button variant="ghost" size="icon" className="rounded-xl bg-slate-100 text-primary h-9 w-9">
+              <User className="h-4 w-4 md:h-5 md:w-5" />
+            </Button>
           </div>
         </header>
 
@@ -167,7 +202,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
         <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white/95 backdrop-blur-xl border-t flex md:hidden z-50 px-1 pb-safe-area-inset-bottom shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
           {navItems.slice(0, 5).map((item) => (
-            <Link 
+            <Link
               key={item.href}
               href={item.href}
               className={cn(
@@ -189,7 +224,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               </span>
             </Link>
           ))}
-          <Link 
+          <Link
             href="/dashboard/records"
             className={cn(
               "flex-1 flex flex-col items-center justify-center gap-1 transition-all relative",

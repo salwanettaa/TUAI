@@ -79,10 +79,17 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     const unsubscribe = onAuthStateChanged(
       auth,
       (firebaseUser) => { // Auth state determined
+        // Keep a lightweight auth hint cookie in sync for middleware route checks.
+        if (typeof document !== 'undefined') {
+          document.cookie = `tuai-auth=${firebaseUser ? '1' : '0'}; Path=/; Max-Age=2592000; SameSite=Lax`;
+        }
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
       },
       (error) => { // Auth listener error
         console.error("FirebaseProvider: onAuthStateChanged error:", error);
+        if (typeof document !== 'undefined') {
+          document.cookie = 'tuai-auth=0; Path=/; Max-Age=2592000; SameSite=Lax';
+        }
         setUserAuthState({ user: null, isUserLoading: false, userError: error });
       }
     );

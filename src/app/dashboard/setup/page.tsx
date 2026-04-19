@@ -112,6 +112,9 @@ export default function FarmSetupPage() {
         addDocumentNonBlocking(farmsRef, {
           ...formData,
           userId: user.uid,
+          members: {
+            [user.uid]: true,
+          },
           aiAnalysis: output,
           createdAt: serverTimestamp()
         })

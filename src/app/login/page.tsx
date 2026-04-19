@@ -9,9 +9,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useAuth, useFirestore } from "@/firebase"
-import { 
-  signInWithEmailAndPassword, 
+import { useAuth, useFirestore, useUser } from "@/firebase"
+import {
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile
 } from "firebase/auth"
@@ -22,7 +22,7 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false)
   const [mode, setMode] = React.useState<"login" | "register">("login")
   const [showPassword, setShowPassword] = React.useState(false)
-  
+
   const [formData, setFormData] = React.useState({
     email: "",
     password: "",
@@ -30,11 +30,18 @@ export default function LoginPage() {
     phone: "",
     age: ""
   })
-  
+
   const router = useRouter()
   const auth = useAuth()
   const db = useFirestore()
+  const { user, isUserLoading } = useUser()
   const { toast } = useToast()
+
+  React.useEffect(() => {
+    if (!isUserLoading && user) {
+      router.push("/dashboard")
+    }
+  }, [user, isUserLoading, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }))
@@ -43,7 +50,7 @@ export default function LoginPage() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    
+
     try {
       if (mode === "register") {
         // 1. Create User in Firebase Auth
@@ -59,7 +66,7 @@ export default function LoginPage() {
           email: formData.email,
           displayName: formData.fullName,
           phone: formData.phone,
-          age: formData.age,
+          age: formData.age ? Number(formData.age) : null,
           countryCode: "MY",
           language: "en-US",
           createdAt: serverTimestamp(),
@@ -79,14 +86,16 @@ export default function LoginPage() {
           description: "Syncing your farm records...",
         })
       }
-      
+
       router.push("/dashboard")
     } catch (error: any) {
       let message = "An error occurred during authentication."
       if (error.code === 'auth/email-already-in-use') message = "This email is already registered."
-      if (error.code === 'auth/wrong-password') message = "Incorrect password. Please try again."
+      if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') message = "Incorrect email or password. Please try again."
       if (error.code === 'auth/user-not-found') message = "No account found with this email."
-      
+      if (error.code === 'auth/weak-password') message = "Password should be at least 6 characters."
+      if (error.code === 'auth/invalid-email') message = "Invalid email address format."
+
       toast({
         variant: "destructive",
         title: "Authentication Failed",
@@ -116,12 +125,12 @@ export default function LoginPage() {
               {mode === "login" ? "Welcome Back" : "Join TUAI"}
             </CardTitle>
             <CardDescription className="text-slate-500 font-medium px-4">
-              {mode === "login" 
-                ? "Enter your credentials to access your farm intelligence dashboard." 
+              {mode === "login"
+                ? "Enter your credentials to access your farm intelligence dashboard."
                 : "Create your farmer profile to start monitoring your crops with AI."}
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="pb-10 px-8">
             <Tabs defaultValue="login" className="w-full" onValueChange={(v) => setMode(v as any)}>
               <TabsList className="grid w-full grid-cols-2 mb-8 h-14 rounded-2xl bg-slate-100 p-1.5">
@@ -184,7 +193,7 @@ export default function LoginPage() {
                     </div>
                   </div>
                 )}
-                
+
                 <div className="space-y-1.5">
                   <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Email Address</Label>
                   <div className="relative">
@@ -219,7 +228,7 @@ export default function LoginPage() {
                       className="pl-12 pr-12 h-13 rounded-xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 transition-all shadow-inner"
                       required
                     />
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
@@ -248,7 +257,7 @@ export default function LoginPage() {
             </Link>
           </CardFooter>
         </Card>
-        
+
         <div className="mt-8 text-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
           SECURE AES-256 ENCRYPTED AUTHENTICATION
         </div>

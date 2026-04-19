@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -8,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { useFirestore, useUser, useDoc, useMemoFirebase } from "@/firebase"
 import { doc } from "firebase/firestore"
-import { updateDocumentNonBlocking } from "@/firebase/non-blocking-updates"
+import { setDocumentNonBlocking } from "@/firebase/non-blocking-updates"
 import { useToast } from "@/hooks/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
@@ -35,15 +36,16 @@ export default function SettingsPage() {
   }, [profile])
 
   const handleSave = () => {
-    if (!userRef) return
+    if (!userRef || !user) return
     
     setIsSaving(true)
     
-    // Non-blocking update as per guidelines
-    updateDocumentNonBlocking(userRef, {
+    // Use setDocumentNonBlocking with merge: true to ensure id check passes and document is created/updated
+    setDocumentNonBlocking(userRef, {
+      id: user.uid, // Explicitly include ID to satisfy strict security rules
       geminiApiKey: apiKey.trim(),
       updatedAt: new Date().toISOString()
-    })
+    }, { merge: true })
     
     // Small delay to simulate feedback since we don't await non-blocking
     setTimeout(() => {
@@ -52,7 +54,7 @@ export default function SettingsPage() {
         title: "Settings Updated",
         description: "Your Gemini API key has been saved successfully.",
       })
-    }, 500)
+    }, 800)
   }
 
   if (isProfileLoading) {
@@ -125,8 +127,7 @@ export default function SettingsPage() {
                disabled={isSaving}
                className="w-full md:w-auto h-14 rounded-2xl bg-primary text-white font-bold px-10 shadow-lg shadow-primary/20 active:scale-95 transition-all"
              >
-               {isSaving ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Save className="h-5 w-5 mr-2" />}
-               Save Changes
+               {isSaving ? <><Loader2 className="h-5 w-5 animate-spin mr-2" /> Saving...</> : <><Save className="h-5 w-5 mr-2" /> Save Changes</>}
              </Button>
           </CardFooter>
         </Card>

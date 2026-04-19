@@ -1,8 +1,9 @@
+
 "use client"
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { 
   Sprout, 
   ShieldAlert, 
@@ -31,6 +32,8 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/firebase"
+import { signOut } from "firebase/auth"
 
 const navItems = [
   {
@@ -82,11 +85,18 @@ const navItems = [
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const auth = useAuth()
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
     setMounted(true)
   }, [])
+
+  const handleLogout = async () => {
+    await signOut(auth)
+    router.push("/login")
+  }
 
   if (!mounted) return null
 
@@ -95,7 +105,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       <Sidebar side="left" collapsible="icon" className="border-r border-sidebar-border bg-sidebar no-scrollbar">
         <SidebarHeader className="h-20 flex items-center px-6">
           <Link href="/" className="flex items-center gap-2 font-headline font-bold text-2xl text-sidebar-primary">
-            <div className="h-8 w-8 bg-sidebar-primary rounded-lg flex items-center justify-center">
+            <div className="h-8 w-8 bg-sidebar-primary rounded-lg flex items-center justify-center shrink-0">
               <Sprout className="h-5 w-5 text-sidebar-primary-foreground" />
             </div>
             <span className="group-data-[collapsible=icon]:hidden">TUAI</span>
@@ -128,11 +138,12 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <SidebarFooter className="p-4 border-t border-sidebar-border/50">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild className="h-12 rounded-xl text-sidebar-foreground/60 hover:text-destructive hover:bg-destructive/10">
-                <Link href="/login">
-                  <LogOut className="h-5 w-5" />
-                  <span className="font-medium">Logout</span>
-                </Link>
+              <SidebarMenuButton 
+                onClick={handleLogout}
+                className="h-12 rounded-xl text-sidebar-foreground/60 hover:text-destructive hover:bg-destructive/10"
+              >
+                <LogOut className="h-5 w-5" />
+                <span className="font-medium">Logout</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -144,17 +155,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3">
             <SidebarTrigger className="text-primary hover:bg-primary/5 rounded-xl h-10 w-10 border border-primary/20 shadow-sm" />
             <div className="flex items-center gap-2 sm:hidden">
-              <div className="h-7 w-7 bg-primary rounded-lg flex items-center justify-center">
-                <Sprout className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-headline font-bold text-lg text-primary">TUAI</span>
+              <span className="font-headline font-bold text-xl text-primary tracking-tight">TUAI</span>
             </div>
           </div>
 
           <div className="flex items-center gap-3 md:gap-4">
              <div className="hidden sm:flex flex-col items-end leading-none mr-2">
                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Region</span>
-               <span className="text-xs md:text-sm font-bold text-slate-700">Selangor, MY</span>
+               <span className="text-xs md:text-sm font-bold text-slate-700">ASEAN Intelligence</span>
              </div>
              <Button variant="ghost" size="icon" className="rounded-xl bg-slate-100 text-primary h-9 w-9">
                <User className="h-4 w-4 md:h-5 md:w-5" />

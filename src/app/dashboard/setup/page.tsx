@@ -96,7 +96,7 @@ export default function FarmSetupPage() {
             <CardContent className="p-8 space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">I am currently...</Label>
+                  <Label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">I am currently...</Label>
                   <Tabs value={formData.status} onValueChange={(v) => setFormData(p => ({...p, status: v as any}))}>
                     <TabsList className="grid w-full grid-cols-2 h-12 rounded-xl">
                       <TabsTrigger value="beginner" className="rounded-lg text-xs font-bold">New Farmer</TabsTrigger>
@@ -258,17 +258,17 @@ export default function FarmSetupPage() {
                     <div className="grid md:grid-cols-3 gap-6">
                       {result.landOptions.map((land, i) => (
                         <div key={i} className="flex flex-col p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:border-orange-200 transition-all group">
-                          <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                          <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm">
                             <Map className="h-5 w-5 text-orange-500" />
                           </div>
-                          <h4 className="font-bold text-lg text-slate-800">{land.location}</h4>
-                          <p className="text-xs text-muted-foreground mb-4">{land.size}</p>
-                          <div className="mt-auto space-y-4">
+                          <h4 className="font-bold text-lg text-slate-800 text-center">{land.location}</h4>
+                          <p className="text-xs text-muted-foreground mb-4 text-center">{land.size}</p>
+                          <div className="mt-auto space-y-4 flex flex-col items-center">
                             <div className="text-sm font-black text-orange-600 bg-orange-100 w-fit px-3 py-1 rounded-full">
                               {land.priceEstimate}
                             </div>
-                            <p className="text-xs italic leading-relaxed text-slate-500">
-                              "{{land.suitabilityReason}}"
+                            <p className="text-xs italic leading-relaxed text-slate-500 text-center">
+                              "{land.suitabilityReason}"
                             </p>
                           </div>
                         </div>

@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -54,7 +55,6 @@ export default function FarmSetupPage() {
       region: '',
       address: '',
     },
-    // Existing Farm Specific
     farmType: '',
     sizeValue: 0,
     sizeUnit: 'hectares',
@@ -72,11 +72,9 @@ export default function FarmSetupPage() {
       feedUsage: '',
       mortalityRate: '',
     },
-    // Beginner Specific
     targetCrop: '',
     hasLand: false,
     motivation: '',
-    // Shared
     goals: [] as string[],
     budget: 'RM 0–500',
     helpType: 'Daily alerts',
@@ -141,17 +139,17 @@ export default function FarmSetupPage() {
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
             <div className="space-y-5">
                <div className="space-y-3">
-                  <Label className="text-xs font-black uppercase tracking-widest text-primary/60">Select Your Path</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Select Your Path</Label>
                   <Tabs 
                     value={formData.status} 
                     onValueChange={(v) => setFormData(p => ({...p, status: v as any}))}
                     className="w-full"
                   >
-                    <TabsList className="grid w-full grid-cols-2 h-16 rounded-2xl bg-slate-100 p-1.5 shadow-inner">
-                      <TabsTrigger value="beginner" className="rounded-xl font-bold text-xs md:text-sm data-[state=active]:shadow-md">
+                    <TabsList className="grid w-full grid-cols-2 h-14 md:h-16 rounded-2xl bg-slate-100 p-1 shadow-inner">
+                      <TabsTrigger value="beginner" className="rounded-xl font-bold text-xs md:text-sm px-2">
                         New Farmer
                       </TabsTrigger>
-                      <TabsTrigger value="existing" className="rounded-xl font-bold text-xs md:text-sm data-[state=active]:shadow-md">
+                      <TabsTrigger value="existing" className="rounded-xl font-bold text-xs md:text-sm px-2">
                         Existing Farm
                       </TabsTrigger>
                     </TabsList>
@@ -189,7 +187,7 @@ export default function FarmSetupPage() {
                  </div>
                </div>
             </div>
-            <Button onClick={nextStep} className="w-full h-14 rounded-2xl bg-primary text-white font-bold text-lg shadow-lg shadow-primary/20">
+            <Button onClick={nextStep} className="w-full h-14 rounded-2xl bg-primary text-white font-bold text-lg shadow-lg">
               Continue <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
@@ -210,7 +208,7 @@ export default function FarmSetupPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="font-bold text-slate-700">Land Area</Label>
                     <Input 
@@ -244,7 +242,7 @@ export default function FarmSetupPage() {
                       placeholder="e.g. 50 Chickens, 5 Cows" 
                       value={formData.livestockDetails}
                       onChange={(e) => setFormData(p => ({...p, livestockDetails: e.target.value}))}
-                      className="mt-2 rounded-xl bg-white"
+                      className="mt-2 rounded-xl bg-white h-12"
                     />
                   )}
                 </div>
@@ -265,21 +263,21 @@ export default function FarmSetupPage() {
                   <Tabs value={formData.hasLand ? "yes" : "no"} onValueChange={(v) => setFormData(p => ({...p, hasLand: v === "yes"}))}>
                     <TabsList className="grid grid-cols-2 h-10 bg-white border p-1 rounded-lg">
                       <TabsTrigger value="yes" className="rounded-md">Yes</TabsTrigger>
-                      <TabsTrigger value="no" className="rounded-md">No (Need AI Scouting)</TabsTrigger>
+                      <TabsTrigger value="no" className="rounded-md">No (AI Scout)</TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </div>
                 <div className="flex items-start space-x-3 p-4 rounded-2xl border bg-primary/5">
                    <Checkbox id="techInterest" checked={formData.techInterest} onCheckedChange={(v) => setFormData(p => ({...p, techInterest: !!v}))} className="mt-1" />
                    <Label htmlFor="techInterest" className="text-sm font-medium text-slate-700 leading-relaxed cursor-pointer">
-                      <strong>AI Interest:</strong> I want to use robots or AI automation to minimize labor.
+                      <strong>AI Interest:</strong> Use robots to minimize labor.
                    </Label>
                 </div>
               </div>
             )}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex gap-3">
               <Button variant="outline" onClick={prevStep} className="flex-1 h-14 rounded-2xl font-bold">Back</Button>
-              <Button onClick={nextStep} className="flex-1 h-14 rounded-2xl bg-primary text-white font-bold">Continue</Button>
+              <Button onClick={nextStep} className="flex-1 h-14 rounded-2xl bg-primary text-white font-bold">Next</Button>
             </div>
           </div>
         )
@@ -288,19 +286,19 @@ export default function FarmSetupPage() {
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
             {formData.status === 'existing' ? (
               <div className="space-y-4">
-                <Label className="text-xs font-black uppercase tracking-widest text-primary/60">Current Pain Points</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {['Crop disease', 'Low yield', 'Expensive fertilizer', 'Water issues', 'Labor shortage', 'High mortality rate'].map(p => (
+                <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Current Pain Points</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {['Crop disease', 'Low yield', 'Expensive fertilizer', 'Water issues', 'Labor shortage', 'High mortality'].map(p => (
                     <div key={p} className={cn(
-                      "flex items-center space-x-3 p-4 rounded-xl border transition-colors cursor-pointer",
-                      formData.problems.includes(p) ? "bg-primary/5 border-primary" : "bg-white border-slate-200"
+                      "flex items-center space-x-3 p-4 rounded-xl border transition-all cursor-pointer",
+                      formData.problems.includes(p) ? "bg-primary/5 border-primary shadow-sm" : "bg-white border-slate-200"
                     )} onClick={() => handleProblemToggle(p)}>
                       <Checkbox 
                         id={p} 
                         checked={formData.problems.includes(p)}
                         onCheckedChange={() => handleProblemToggle(p)}
                       />
-                      <Label htmlFor={p} className="text-sm font-bold text-slate-700 flex-1 cursor-pointer">{p}</Label>
+                      <Label htmlFor={p} className="text-sm font-bold text-slate-700 flex-1 cursor-pointer truncate">{p}</Label>
                     </div>
                   ))}
                 </div>
@@ -308,21 +306,21 @@ export default function FarmSetupPage() {
             ) : (
               <div className="space-y-5">
                 <div className="space-y-2">
-                  <Label className="font-bold text-slate-700">Why do you want to become a farmer?</Label>
+                  <Label className="font-bold text-slate-700">Why start farming?</Label>
                   <Textarea 
-                    placeholder="e.g. To secure food for my family and reduce import reliance..."
+                    placeholder="e.g. To secure food for my family..."
                     value={formData.motivation}
                     onChange={(e) => setFormData(p => ({...p, motivation: e.target.value}))}
-                    className="rounded-xl h-32 resize-none"
+                    className="rounded-xl h-24 resize-none"
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-black uppercase tracking-widest text-primary/60">Your Goals</Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Your Goals</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                      {['Full time income', 'Side hustle', 'Food security', 'Sustainability'].map(g => (
                         <div key={g} className={cn(
-                          "flex items-center space-x-3 p-4 rounded-xl border transition-colors cursor-pointer",
-                          formData.goals.includes(g) ? "bg-primary/5 border-primary" : "bg-white border-slate-200"
+                          "flex items-center space-x-3 p-4 rounded-xl border transition-all cursor-pointer",
+                          formData.goals.includes(g) ? "bg-primary/5 border-primary shadow-sm" : "bg-white border-slate-200"
                         )} onClick={() => handleGoalToggle(g)}>
                           <Checkbox checked={formData.goals.includes(g)} onCheckedChange={() => handleGoalToggle(g)} />
                           <Label className="text-sm font-bold text-slate-700 flex-1 cursor-pointer">{g}</Label>
@@ -332,9 +330,9 @@ export default function FarmSetupPage() {
                 </div>
               </div>
             )}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex gap-3">
               <Button variant="outline" onClick={prevStep} className="flex-1 h-14 rounded-2xl font-bold">Back</Button>
-              <Button onClick={nextStep} className="flex-1 h-14 rounded-2xl bg-primary text-white font-bold">Continue</Button>
+              <Button onClick={nextStep} className="flex-1 h-14 rounded-2xl bg-primary text-white font-bold">Next</Button>
             </div>
           </div>
         )
@@ -344,10 +342,10 @@ export default function FarmSetupPage() {
             <div className="space-y-5">
                {formData.status === 'existing' ? (
                  <div className="space-y-5">
-                   <Label className="text-xs font-black uppercase tracking-widest text-primary/60">Production Data</Label>
+                   <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Production Data</Label>
                    <div className="grid grid-cols-1 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-sm font-bold text-slate-600">Average Yield (Kg/Metric Ton)</Label>
+                        <Label className="text-sm font-bold text-slate-600">Avg Yield (Kg/Metric Ton)</Label>
                         <Input 
                           placeholder="e.g. 5.5 tons/hectare"
                           value={formData.productionData.averageYield} 
@@ -356,7 +354,7 @@ export default function FarmSetupPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-sm font-bold text-slate-600">Monthly Feed/Fertilizer Usage</Label>
+                        <Label className="text-sm font-bold text-slate-600">Monthly Usage (Feed/Fertilizer)</Label>
                         <Input 
                           placeholder="e.g. 500kg NPK"
                           value={formData.productionData.feedUsage} 
@@ -368,26 +366,26 @@ export default function FarmSetupPage() {
                  </div>
                ) : (
                  <div className="space-y-5">
-                   <Label className="text-xs font-black uppercase tracking-widest text-primary/60">Budget & Modal</Label>
+                   <Label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Budget & Modal</Label>
                    <div className="space-y-3">
                      <Select value={formData.budget} onValueChange={(v) => setFormData(p => ({...p, budget: v}))}>
-                      <SelectTrigger className="rounded-xl h-16 bg-white border-slate-200 px-6 font-bold text-slate-700">
+                      <SelectTrigger className="rounded-xl h-14 bg-white border-slate-200 px-4 font-bold text-slate-700">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="RM 0–500 (Small Scale)">RM 0–500 (Small Scale)</SelectItem>
-                        <SelectItem value="RM 5,000–20,000 (Commercial)">RM 5,000–20,000 (Commercial)</SelectItem>
-                        <SelectItem value="RM 50,000+ (Enterprise)">RM 50,000+ (Enterprise)</SelectItem>
+                        <SelectItem value="RM 0–500 (Small Scale)">RM 0–500 (Small)</SelectItem>
+                        <SelectItem value="RM 5,000–20,000 (Commercial)">RM 5k–20k (Com)</SelectItem>
+                        <SelectItem value="RM 50,000+ (Enterprise)">RM 50k+ (Ent)</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="text-[10px] text-muted-foreground font-medium px-2">
-                      *AI uses this to calculate seeds, tools, and labor requirements.
+                    <p className="text-[10px] text-muted-foreground font-medium italic">
+                      AI uses this to calculate seeds and tools.
                     </p>
                    </div>
                  </div>
                )}
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex gap-3">
               <Button variant="outline" onClick={prevStep} className="flex-1 h-14 rounded-2xl font-bold">Back</Button>
               <Button onClick={nextStep} className="flex-1 h-14 rounded-2xl bg-primary text-white font-bold">Review</Button>
             </div>
@@ -396,27 +394,24 @@ export default function FarmSetupPage() {
       case 5:
         return (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-            <div className="space-y-5 text-center py-10 bg-emerald-50/50 rounded-3xl border border-emerald-100">
-               <div className="h-20 w-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/20">
-                 <CheckCircle2 className="h-10 w-10 text-white" />
+            <div className="space-y-5 text-center py-8 bg-emerald-50/50 rounded-3xl border border-emerald-100">
+               <div className="h-16 w-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/20">
+                 <CheckCircle2 className="h-8 w-8 text-white" />
                </div>
-               <div className="space-y-2 px-6">
-                 <h3 className="text-2xl font-headline font-bold text-slate-900">Analysis Ready</h3>
-                 <p className="text-sm text-slate-600 font-medium">
-                    Our Gemini AI is ready to synthesize your data and generate a professional roadmap.
+               <div className="space-y-2 px-4">
+                 <h3 className="text-xl font-headline font-bold text-slate-900">Analysis Ready</h3>
+                 <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                    AI will now synthesize your data and generate your professional roadmap.
                  </p>
                </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex gap-3">
               <Button variant="outline" onClick={prevStep} className="flex-1 h-14 rounded-2xl font-bold">Back</Button>
-              <Button onClick={handleStartPlanning} disabled={loading} className="flex-1 h-14 rounded-2xl bg-primary text-white font-bold shadow-xl shadow-primary/30">
+              <Button onClick={handleStartPlanning} disabled={loading} className="flex-1 h-14 rounded-2xl bg-primary text-white font-bold">
                 {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Analyzing...
-                  </>
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  "Generate AI Intelligence"
+                  "Generate"
                 )}
               </Button>
             </div>
@@ -428,139 +423,134 @@ export default function FarmSetupPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-32">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+    <div className="max-w-6xl mx-auto space-y-6 pb-20">
+      <div className="flex flex-col gap-4 px-1">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-black uppercase tracking-widest mb-4">
-            <Compass className="h-3.5 w-3.5" />
-            AI Pathfinder Wizard
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-3">
+            <Compass className="h-3 w-3" />
+            AI Pathfinder
           </div>
-          <h2 className="text-4xl font-headline font-bold text-slate-900 tracking-tight leading-none">Farm Intelligence Setup</h2>
-          <p className="text-muted-foreground mt-3 text-lg font-medium">Guide your journey or perform a deep performance audit.</p>
+          <h2 className="text-2xl md:text-3xl font-headline font-bold text-slate-900 leading-tight">Farm Intelligence</h2>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1 font-medium italic">Audit your farm or start a new path to zero dependency.</p>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-12 gap-8 px-2">
-        <div className="lg:col-span-5 space-y-6">
-          <Card className="rounded-[2.5rem] shadow-2xl border-none bg-white overflow-hidden">
-            <CardHeader className="bg-slate-50 border-b p-8 space-y-4">
+      <div className="grid lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-5">
+          <Card className="rounded-[2rem] shadow-xl border-none bg-white overflow-hidden">
+            <CardHeader className="bg-slate-50 border-b p-6 space-y-3">
               <div className="flex justify-between items-center">
-                 <CardTitle className="text-2xl font-headline font-bold flex items-center gap-2 text-primary">
-                   <Map className="h-6 w-6" />
-                   Journey Setup
+                 <CardTitle className="text-lg font-headline font-bold text-primary flex items-center gap-2">
+                   <Map className="h-5 w-5" />
+                   Setup
                  </CardTitle>
-                 <div className="text-xs font-black text-primary bg-primary/10 px-4 py-1.5 rounded-full">
-                   Step {step} of 5
+                 <div className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-full">
+                   Step {step}/5
                  </div>
               </div>
-              <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+              <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-primary transition-all duration-700 ease-out" 
+                  className="h-full bg-primary transition-all duration-500 ease-out" 
                   style={{ width: `${(step/5) * 100}%` }}
                 />
               </div>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-6">
                {renderStep()}
             </CardContent>
           </Card>
         </div>
 
-        <div className="lg:col-span-7 space-y-8">
+        <div className="lg:col-span-7 space-y-6">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-32 gap-8 animate-pulse">
+            <div className="flex flex-col items-center justify-center py-20 gap-6 animate-pulse bg-white/50 border-2 border-dashed rounded-[2rem] px-6">
               <div className="relative">
-                <Loader2 className="h-24 w-24 animate-spin text-primary opacity-20" />
-                <Sparkles className="h-10 w-10 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                <Loader2 className="h-16 w-16 animate-spin text-primary opacity-20" />
+                <Sparkles className="h-6 w-6 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
               </div>
-              <div className="text-center space-y-3">
-                <h3 className="text-3xl font-headline font-bold text-slate-900">AI is Synthesizing...</h3>
-                <p className="text-lg text-muted-foreground font-medium max-w-[400px]">
-                  Analyzing state data, commodity price shock metrics, and your operational capacity.
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-headline font-bold text-slate-900">Synthesizing...</h3>
+                <p className="text-sm text-muted-foreground font-medium max-w-[300px] mx-auto leading-relaxed">
+                  Analyzing regional price shocks and production capacity.
                 </p>
               </div>
             </div>
           ) : result ? (
-            <div className="animate-in fade-in slide-in-from-bottom-10 duration-1000 space-y-8">
-              {/* Health Scores for Existing */}
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-6">
               {result.healthReport && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                    {[
-                     { label: 'Productivity', val: `${result.healthReport.productivityScore}%`, icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                     { label: 'Efficiency', val: `${result.healthReport.costEfficiency}%`, icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50' },
-                     { label: 'Disease Risk', val: result.healthReport.diseaseRisk, icon: ShieldAlert, color: 'text-orange-600', bg: 'bg-orange-50' },
-                     { label: 'Water Risk', val: result.healthReport.waterRisk, icon: Droplets, color: 'text-cyan-600', bg: 'bg-cyan-50' },
+                     { label: 'Yield', val: `${result.healthReport.productivityScore}%`, icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                     { label: 'Opex', val: `${result.healthReport.costEfficiency}%`, icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50' },
+                     { label: 'Diseases', val: result.healthReport.diseaseRisk, icon: ShieldAlert, color: 'text-orange-600', bg: 'bg-orange-50' },
+                     { label: 'Water', val: result.healthReport.waterRisk, icon: Droplets, color: 'text-cyan-600', bg: 'bg-cyan-50' },
                    ].map((item, i) => (
-                     <Card key={i} className="rounded-3xl border-none shadow-xl p-6 text-center bg-white group hover:scale-105 transition-transform">
-                        <div className={cn("h-12 w-12 mx-auto rounded-2xl flex items-center justify-center mb-3", item.bg)}>
-                          <item.icon className={cn("h-6 w-6", item.color)} />
+                     <Card key={i} className="rounded-2xl border-none shadow-md p-4 text-center bg-white">
+                        <div className={cn("h-10 w-10 mx-auto rounded-xl flex items-center justify-center mb-2", item.bg)}>
+                          <item.icon className={cn("h-5 w-5", item.color)} />
                         </div>
-                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{item.label}</div>
-                        <div className="text-2xl font-black text-slate-900 mt-1">{item.val}</div>
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{item.label}</div>
+                        <div className="text-base font-black text-slate-900 mt-0.5">{item.val}</div>
                      </Card>
                    ))}
                 </div>
               )}
 
-              {/* Financial Dashboard */}
               {result.financialEstimate && (
-                <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white p-10 border-l-[12px] border-l-primary relative overflow-hidden group">
-                  <DollarSign className="absolute -right-8 -bottom-8 h-48 w-48 text-slate-50 group-hover:scale-110 transition-transform duration-1000" />
-                  <div className="grid md:grid-cols-3 gap-10 relative z-10">
-                    <div className="space-y-2">
-                       <Label className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                         <DollarSign className="h-4 w-4" /> Start-up Capital
+                <Card className="rounded-[2rem] border-none shadow-xl bg-white p-6 border-l-[8px] border-l-primary relative overflow-hidden group">
+                  <DollarSign className="absolute -right-6 -bottom-6 h-32 w-32 text-slate-50 group-hover:scale-110 transition-transform duration-1000" />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
+                    <div className="space-y-1">
+                       <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                         <DollarSign className="h-3 w-3" /> Capital
                        </Label>
-                       <div className="text-3xl font-black text-primary leading-none">{result.financialEstimate.initialCapital}</div>
+                       <div className="text-xl font-black text-primary leading-none">{result.financialEstimate.initialCapital}</div>
                     </div>
-                    <div className="space-y-2">
-                       <Label className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                         <TrendingDown className="h-4 w-4" /> Monthly OpEx
+                    <div className="space-y-1">
+                       <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                         <TrendingDown className="h-3 w-3" /> Monthly
                        </Label>
-                       <div className="text-3xl font-black text-slate-800 leading-none">{result.financialEstimate.operatingExpense}</div>
+                       <div className="text-xl font-black text-slate-800 leading-none">{result.financialEstimate.operatingExpense}</div>
                     </div>
-                    <div className="space-y-2">
-                       <Label className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                         <TrendingUp className="h-4 w-4" /> Target ROI
+                    <div className="space-y-1">
+                       <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                         <TrendingUp className="h-3 w-3" /> ROI
                        </Label>
-                       <div className="text-3xl font-black text-emerald-600 leading-none">{result.financialEstimate.expectedRoiTime}</div>
+                       <div className="text-xl font-black text-emerald-600 leading-none">{result.financialEstimate.expectedRoiTime}</div>
                     </div>
                   </div>
                 </Card>
               )}
 
-              {/* AI Motivation */}
-              <Card className="rounded-[3rem] border-none bg-primary text-white p-12 relative overflow-hidden shadow-[0_30px_60px_-15px_rgba(32,91,90,0.4)]">
-                <Sparkles className="absolute -top-6 -right-6 h-40 w-40 opacity-10 rotate-12" />
-                <div className="relative z-10 space-y-6">
-                  <h3 className="text-3xl md:text-4xl font-headline font-bold leading-tight">Farmer's Calling</h3>
-                  <p className="text-xl md:text-2xl text-primary-foreground font-medium leading-relaxed italic opacity-90">
+              <Card className="rounded-[2.5rem] border-none bg-primary text-white p-8 relative overflow-hidden shadow-xl">
+                <div className="relative z-10 space-y-4">
+                  <h3 className="text-xl font-headline font-bold">AI Motivation</h3>
+                  <p className="text-base text-primary-foreground font-medium leading-relaxed italic opacity-95">
                     "{result.motivationAI}"
                   </p>
                 </div>
               </Card>
 
-              {/* Scouting Results */}
-              {result.landOptions && result.landOptions.length > 0 && (
-                <Card className="rounded-[3rem] shadow-2xl border-none bg-white overflow-hidden">
-                  <CardHeader className="bg-blue-50 p-10 border-b">
-                     <CardTitle className="text-2xl font-headline font-bold flex items-center gap-3 text-blue-900">
-                        <MapPin className="h-7 w-7 text-blue-600" />
-                        AI Land Scout Report
+              {result.landOptions && (
+                <Card className="rounded-[2rem] shadow-xl border-none bg-white overflow-hidden">
+                  <CardHeader className="bg-blue-50 p-6 border-b">
+                     <CardTitle className="text-lg font-headline font-bold flex items-center gap-2 text-blue-900">
+                        <MapPin className="h-5 w-5 text-blue-600" />
+                        Land Scout
                      </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-10">
-                    <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 gap-4">
                       {result.landOptions.map((land, i) => (
-                        <div key={i} className="p-6 rounded-[2rem] bg-slate-50 border border-slate-200 space-y-4 hover:border-blue-400 transition-all hover:bg-white hover:shadow-xl group">
-                           <div className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">{land.location}</div>
-                           <div className="text-2xl font-black text-slate-800 tracking-tighter">{land.priceEstimate}</div>
-                           <Badge variant="outline" className="bg-white border-blue-100 text-blue-700">{land.size}</Badge>
-                           <div className="pt-4 border-t border-slate-200 mt-2">
-                             <p className="text-xs italic leading-relaxed text-slate-500 font-medium">
-                               "{land.suitabilityReason}"
-                             </p>
+                        <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 hover:border-blue-300 transition-all">
+                           <div className="flex justify-between items-start">
+                             <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{land.location}</div>
+                             <Badge variant="outline" className="bg-white text-[10px]">{land.size}</Badge>
                            </div>
+                           <div className="text-xl font-black text-slate-800">{land.priceEstimate}</div>
+                           <p className="text-[11px] italic leading-relaxed text-slate-500 font-medium">
+                             {land.suitabilityReason}
+                           </p>
                         </div>
                       ))}
                     </div>
@@ -568,41 +558,39 @@ export default function FarmSetupPage() {
                 </Card>
               )}
 
-              {/* Action Plan */}
-              <Card className="rounded-[3rem] shadow-2xl border-none bg-white overflow-hidden">
-                <CardHeader className="bg-primary/5 p-10 border-b">
-                  <CardTitle className="text-2xl font-headline font-bold flex items-center gap-3 text-primary">
-                    <Zap className="h-7 w-7 fill-primary/20" />
-                    AI Action Directives
+              <Card className="rounded-[2rem] shadow-xl border-none bg-white overflow-hidden">
+                <CardHeader className="bg-primary/5 p-6 border-b">
+                  <CardTitle className="text-lg font-headline font-bold flex items-center gap-2 text-primary">
+                    <Zap className="h-5 w-5" />
+                    Recommendations
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-10 space-y-4">
+                <CardContent className="p-6 space-y-3">
                   {result.recommendations.map((rec, i) => (
-                    <div key={i} className="flex gap-5 p-6 rounded-[2rem] bg-white border border-slate-100 shadow-sm transition-all hover:translate-x-2">
-                      <div className="h-10 w-10 rounded-2xl bg-primary text-white flex items-center justify-center shrink-0 font-black text-sm">
+                    <div key={i} className="flex gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 shadow-sm text-sm font-bold text-slate-700 leading-relaxed">
+                      <div className="h-6 w-6 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 text-xs">
                         {i + 1}
                       </div>
-                      <p className="text-base font-bold leading-relaxed text-slate-700">{rec}</p>
+                      {rec}
                     </div>
                   ))}
                 </CardContent>
               </Card>
 
-              {/* Roadmap Steps */}
-              <Card className="rounded-[3rem] shadow-2xl border-none bg-white overflow-hidden">
-                <CardHeader className="bg-emerald-500 p-10 border-b">
-                  <CardTitle className="text-2xl font-headline font-bold flex items-center gap-3 text-white">
-                    <CheckCircle2 className="h-7 w-7" />
-                    Pathfinder Execution Plan
+              <Card className="rounded-[2rem] shadow-xl border-none bg-white overflow-hidden">
+                <CardHeader className="bg-emerald-500 p-6 border-b">
+                  <CardTitle className="text-lg font-headline font-bold flex items-center gap-2 text-white">
+                    <CheckCircle2 className="h-5 w-5" />
+                    Pathfinder Roadmap
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-10 space-y-4">
+                <CardContent className="p-6 space-y-3">
                   {result.roadmap.map((stepStr, i) => (
-                    <div key={i} className="flex gap-5 p-5 rounded-2xl bg-slate-50 border border-slate-100 group hover:bg-white transition-colors">
-                      <div className="h-10 w-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 text-sm font-black shadow-lg">
+                    <div key={i} className="flex gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-white transition-colors">
+                      <div className="h-7 w-7 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 text-xs font-black">
                         {i + 1}
                       </div>
-                      <p className="text-base font-bold text-slate-700 leading-relaxed group-hover:text-slate-900">
+                      <p className="text-sm font-bold text-slate-700 leading-relaxed group-hover:text-slate-900">
                         {stepStr}
                       </p>
                     </div>
@@ -611,18 +599,18 @@ export default function FarmSetupPage() {
               </Card>
             </div>
           ) : (
-            <div className="h-full min-h-[600px] flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm border-4 border-dashed rounded-[4rem] p-12 text-center gap-8 shadow-inner group">
-              <div className="h-32 w-32 bg-primary/10 rounded-[3rem] flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-12 duration-500 shadow-xl">
-                <Compass className="h-16 w-16 text-primary" />
+            <div className="h-full min-h-[400px] flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm border-2 border-dashed rounded-[3rem] p-8 text-center gap-6 shadow-inner group">
+              <div className="h-20 w-20 bg-primary/10 rounded-[2rem] flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 duration-500 shadow-lg">
+                <Compass className="h-10 w-10 text-primary" />
               </div>
-              <div className="space-y-4 max-w-[450px]">
-                <h3 className="text-3xl font-headline font-bold text-slate-900 tracking-tight leading-none">Unlock Deep Farm Intelligence</h3>
-                <p className="text-slate-500 text-lg font-medium leading-relaxed">
-                  Provide your farm details to trigger our high-fidelity Gemini analysis. We'll identify risks, calculate needs, and build your roadmap to self-sufficiency.
+              <div className="space-y-2 max-w-[320px]">
+                <h3 className="text-xl font-headline font-bold text-slate-900 leading-tight">Deep Farm Intelligence</h3>
+                <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
+                  Complete the wizard to trigger Gemini AI analysis. We'll identify risks and build your roadmap.
                 </p>
               </div>
-              <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-[0.3em] opacity-40">
-                Grounded in ASEAN regional agriculture data
+              <div className="text-[9px] font-black text-primary uppercase tracking-[0.2em] opacity-40">
+                Grounded in ASEAN regional data
               </div>
             </div>
           )}

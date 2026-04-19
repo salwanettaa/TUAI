@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { ClipboardList, Filter, Download, Plus, Search, Calendar, Tag, CheckCircle2, Loader2 } from "lucide-react"
+import { ClipboardList, Filter, Download, Plus, Search, Calendar, Tag, CheckCircle2, Loader2, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -16,7 +16,6 @@ export default function RecordsPage() {
   const { user } = useUser()
   const db = useFirestore()
 
-  // Fetch real scan results from Firestore
   const scansQuery = useMemoFirebase(() => {
     if (!db || !user) return null
     return query(
@@ -36,126 +35,124 @@ export default function RecordsPage() {
   }, [records, search])
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="max-w-6xl mx-auto space-y-6 pb-24">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-1">
         <div>
-          <h2 className="text-3xl font-headline font-bold text-primary">Farm Activity Ledger</h2>
-          <p className="text-muted-foreground">Historical records of your AI diagnostics and farm health events.</p>
+          <h2 className="text-2xl md:text-3xl font-headline font-bold text-primary">Farm Activity Ledger</h2>
+          <p className="text-xs md:text-sm text-muted-foreground italic mt-1">Historical records of your AI diagnostics and farm health.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary/5">
+          <Button variant="outline" className="flex-1 md:flex-none rounded-xl border-primary text-primary h-11 text-xs font-bold">
             <Download className="mr-2 h-4 w-4" /> Export
           </Button>
-          <Button className="rounded-xl bg-primary text-white font-bold">
+          <Button className="flex-1 md:flex-none rounded-xl bg-primary text-white h-11 text-xs font-bold">
             <Plus className="mr-2 h-4 w-4" /> New Entry
           </Button>
         </div>
       </div>
 
-      <Card className="rounded-3xl border-none shadow-xl overflow-hidden bg-white">
-        <CardHeader className="border-b bg-accent/10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden bg-white">
+        <CardHeader className="border-b bg-accent/5 p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
              <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input 
-                  placeholder="Filter by disease or status..." 
+                  placeholder="Filter by diagnosis..." 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 rounded-xl border-none bg-white shadow-sm"
+                  className="pl-9 rounded-xl border-none bg-white shadow-sm h-10 text-sm"
                 />
              </div>
-             <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="rounded-lg text-muted-foreground">
-                  <Filter className="mr-2 h-4 w-4" /> Filters
-                </Button>
-             </div>
+             <Button variant="ghost" size="sm" className="w-fit rounded-lg text-muted-foreground text-[10px] font-black uppercase tracking-widest">
+               <Filter className="mr-2 h-3.5 w-3.5" /> Filters
+             </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="p-20 flex flex-col items-center justify-center gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">Loading your farm records...</p>
+            <div className="py-20 flex flex-col items-center justify-center gap-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary opacity-30" />
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Syncing Records...</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader className="bg-accent/5">
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="font-bold">Date</TableHead>
-                  <TableHead className="font-bold">Category</TableHead>
-                  <TableHead className="font-bold">Diagnosis / Item</TableHead>
-                  <TableHead className="font-bold">Confidence</TableHead>
-                  <TableHead className="font-bold">Status</TableHead>
-                  <TableHead className="font-bold text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRecords.map((record) => (
-                  <TableRow key={record.id} className="group hover:bg-accent/5 transition-colors cursor-pointer">
-                    <TableCell className="text-sm">
-                      {new Date(record.scanDate).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="rounded-full bg-white font-medium">
-                        AI Diagnosis
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-bold text-primary group-hover:underline">{record.diseaseIdentified}</div>
-                      <div className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">AI Recommendation Applied</div>
-                    </TableCell>
-                    <TableCell className="text-sm font-medium">
-                      {record.confidenceScore}%
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600">
-                        <CheckCircle2 className="h-4 w-4" />
-                        {record.status}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full">
-                        <Search className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader className="bg-slate-50">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest min-w-[100px]">Date</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Diagnosis</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest hidden sm:table-cell text-center">Confidence</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Status</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-right">Action</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filteredRecords.map((record) => (
+                    <TableRow key={record.id} className="group hover:bg-primary/5 transition-colors cursor-pointer border-b last:border-0">
+                      <TableCell className="text-[11px] font-medium text-slate-500 whitespace-nowrap">
+                        {new Date(record.scanDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-bold text-slate-900 group-hover:text-primary transition-colors text-sm">{record.diseaseIdentified}</div>
+                        <div className="text-[9px] text-muted-foreground mt-0.5 line-clamp-1 uppercase font-black tracking-tighter">AI Diagnosis Applied</div>
+                      </TableCell>
+                      <TableCell className="text-center hidden sm:table-cell">
+                        <Badge variant="outline" className="rounded-full bg-slate-50 text-[10px] font-bold">
+                          {record.confidenceScore}%
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1 text-[10px] font-black text-emerald-600 uppercase tracking-tighter">
+                          <CheckCircle2 className="h-3 w-3" />
+                          {record.status}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 p-0 rounded-lg group-hover:bg-white group-hover:shadow-sm">
+                          <MoreVertical className="h-4 w-4 text-slate-400" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
           {filteredRecords.length === 0 && !isLoading && (
-            <div className="p-20 text-center space-y-4">
-               <div className="h-16 w-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto">
-                 <ClipboardList className="h-8 w-8 text-muted-foreground" />
+            <div className="py-20 text-center space-y-4 px-6">
+               <div className="h-16 w-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <ClipboardList className="h-8 w-8 text-slate-300" />
                </div>
-               <p className="text-muted-foreground font-medium">No records found.</p>
-               <Button variant="outline" onClick={() => setSearch("")}>Reset Filters</Button>
+               <p className="text-slate-400 font-bold text-sm">No historical records found.</p>
+               <Button variant="outline" size="sm" onClick={() => setSearch("")} className="rounded-xl h-10 px-6 font-bold text-xs">Reset Filters</Button>
             </div>
           )}
         </CardContent>
       </Card>
       
-      <div className="grid md:grid-cols-2 gap-8">
-        <Card className="rounded-3xl border-none shadow-xl bg-primary text-white">
-          <CardHeader>
-             <CardTitle className="font-headline font-bold">Ledger Integrity</CardTitle>
-             <CardDescription className="text-primary-foreground/70">All records are cryptographically verified and synced to the cloud.</CardDescription>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-1">
+        <Card className="rounded-[2rem] border-none shadow-xl bg-primary text-white p-6 md:p-8">
+          <CardHeader className="p-0 mb-4">
+             <CardTitle className="font-headline font-bold text-xl md:text-2xl">Ledger Integrity</CardTitle>
+             <CardDescription className="text-primary-foreground/70 text-sm">Synced with Firebase Cloud Storage.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-             <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
-                <div className="h-full bg-white w-[100%] rounded-full" />
+          <CardContent className="p-0 space-y-4">
+             <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden shadow-inner">
+                <div className="h-full bg-white w-full rounded-full animate-in slide-in-from-left duration-1000" />
              </div>
-             <p className="text-xs font-medium uppercase tracking-widest opacity-80">Synced with Firebase Firestore</p>
+             <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">100% Security Verified</p>
           </CardContent>
         </Card>
 
-        <Card className="rounded-3xl border-none shadow-xl bg-white border border-dashed border-primary/20">
-          <CardHeader>
-             <CardTitle className="font-headline font-bold text-primary">Need help?</CardTitle>
-             <CardDescription>Export your data for government subsidy applications.</CardDescription>
+        <Card className="rounded-[2rem] border-none shadow-xl bg-white border border-dashed border-primary/20 p-6 md:p-8 flex flex-col justify-center">
+          <CardHeader className="p-0 mb-4">
+             <CardTitle className="font-headline font-bold text-lg md:text-xl text-primary">Subsidy Support</CardTitle>
+             <CardDescription className="text-slate-500 text-xs md:text-sm">Export activity log for your government grant applications.</CardDescription>
           </CardHeader>
-          <CardContent>
-             <Button variant="ghost" className="w-full text-primary font-bold hover:bg-primary/5">Download Subsidy PDF</Button>
+          <CardContent className="p-0">
+             <Button variant="outline" className="w-full text-primary font-black text-xs md:text-sm h-12 rounded-xl border-primary/20 hover:bg-primary/5">
+               Download Subsidy PDF
+             </Button>
           </CardContent>
         </Card>
       </div>

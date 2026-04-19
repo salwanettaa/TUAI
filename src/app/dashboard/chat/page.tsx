@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -14,7 +15,7 @@ type Message = {
 
 export default function ChatAdvisorPage() {
   const [messages, setMessages] = React.useState<Message[]>([
-    { role: "assistant", content: "Hello Farmer Ahmad! I'm your TUAI Copilot. How can I help you with your crops or farm operations today?" }
+    { role: "assistant", content: "Hello Farmer! I'm your TUAI Copilot. How can I help you with your crops today?" }
   ])
   const [input, setInput] = React.useState("")
   const [isLoading, setIsLoading] = React.useState(false)
@@ -32,7 +33,7 @@ export default function ChatAdvisorPage() {
       const response = await chatAdvisor({ userQuestion: userMsg })
       setMessages(prev => [...prev, { role: "assistant", content: response.advice }])
     } catch (error) {
-      setMessages(prev => [...prev, { role: "assistant", content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment." }])
+      setMessages(prev => [...prev, { role: "assistant", content: "I'm having trouble connecting. Please try again." }])
     } finally {
       setIsLoading(false)
     }
@@ -48,36 +49,34 @@ export default function ChatAdvisorPage() {
   }, [messages])
 
   return (
-    <div className="h-[calc(100vh-12rem)] flex flex-col max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-white border">
+    <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-12rem)] flex flex-col max-w-5xl mx-auto rounded-[2rem] md:rounded-3xl overflow-hidden shadow-2xl bg-white border">
       {/* Header */}
-      <div className="p-6 bg-primary text-white flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="h-12 w-12 bg-white/20 rounded-2xl flex items-center justify-center">
-            <Bot className="h-7 w-7 text-white" />
+      <div className="p-4 md:p-6 bg-primary text-white flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 md:h-12 md:w-12 bg-white/20 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
+            <Bot className="h-6 w-6 md:h-7 md:w-7 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-headline font-bold leading-none">TUAI Copilot</h2>
-            <p className="text-primary-foreground/70 text-xs mt-1">Grounded in local agriculture data</p>
+            <h2 className="text-lg md:text-xl font-headline font-bold leading-tight">TUAI Copilot</h2>
+            <p className="text-primary-foreground/70 text-[10px] md:text-xs">Grounded in local ASEAN data</p>
           </div>
         </div>
-        <div className="hidden md:flex gap-4">
-           <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full text-xs">
-              <ThermometerSun className="h-4 w-4" />
-              <span>Selangor: 32°C</span>
-           </div>
+        <div className="hidden sm:flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest">
+           <ThermometerSun className="h-3.5 w-3.5" />
+           <span>32°C</span>
         </div>
       </div>
 
       {/* Chat Area */}
-      <ScrollArea className="flex-1 p-6 bg-accent/5" ref={scrollAreaRef}>
-        <div className="space-y-6 pb-4">
+      <ScrollArea className="flex-1 p-4 md:p-6 bg-accent/5" ref={scrollAreaRef}>
+        <div className="space-y-4 md:space-y-6 pb-4">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-              <div className={`flex gap-3 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-white border text-primary'}`}>
-                  {msg.role === 'user' ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+              <div className={`flex gap-2 md:gap-3 max-w-[90%] md:max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`h-7 w-7 md:h-8 md:w-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-white border text-primary'}`}>
+                  {msg.role === 'user' ? <User className="h-4 w-4 md:h-5 md:w-5" /> : <Bot className="h-4 w-4 md:h-5 md:w-5" />}
                 </div>
-                <div className={`p-4 rounded-2xl shadow-sm text-sm leading-relaxed ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white border rounded-tl-none'}`}>
+                <div className={`p-3 md:p-4 rounded-2xl shadow-sm text-xs md:text-sm leading-relaxed ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white border rounded-tl-none text-slate-700'}`}>
                   {msg.content}
                 </div>
               </div>
@@ -87,11 +86,11 @@ export default function ChatAdvisorPage() {
             <div className="flex justify-start">
                <div className="flex gap-3 max-w-[85%]">
                  <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0 bg-white border">
-                   <Bot className="h-5 w-5 text-primary" />
+                   <Bot className="h-4 w-4 text-primary" />
                  </div>
-                 <div className="p-4 rounded-2xl bg-white border rounded-tl-none shadow-sm flex items-center gap-2">
-                   <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                   <span className="text-xs font-medium text-muted-foreground">Thinking...</span>
+                 <div className="p-3 md:p-4 rounded-2xl bg-white border rounded-tl-none shadow-sm flex items-center gap-2">
+                   <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                   <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Thinking...</span>
                  </div>
                </div>
             </div>
@@ -99,18 +98,18 @@ export default function ChatAdvisorPage() {
         </div>
       </ScrollArea>
 
-      {/* Quick suggestions */}
-      <div className="px-6 py-2 bg-accent/5 flex gap-2 overflow-x-auto no-scrollbar pb-4">
+      {/* Quick suggestions - Responsive scrollable bar */}
+      <div className="px-4 py-2 bg-accent/5 flex gap-2 overflow-x-auto no-scrollbar pb-3 border-t md:border-t-0 shrink-0">
         {[
-          "What's the weather today?",
-          "Subsidy for Padi?",
-          "Fertilizer shortage alerts?",
+          "Weather in Selangor?",
+          "Padi subsidy 2024?",
+          "Urea shortage alerts",
           "Soil health tips"
         ].map((s, i) => (
           <button 
             key={i} 
             onClick={() => setInput(s)}
-            className="whitespace-nowrap px-4 py-1.5 bg-white border rounded-full text-xs font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors shadow-sm"
+            className="whitespace-nowrap px-4 py-1.5 bg-white border rounded-full text-[10px] md:text-xs font-bold text-muted-foreground hover:border-primary hover:text-primary transition-all shadow-sm active:scale-95"
           >
             {s}
           </button>
@@ -118,26 +117,26 @@ export default function ChatAdvisorPage() {
       </div>
 
       {/* Input Area */}
-      <div className="p-6 border-t bg-white">
-        <div className="flex gap-4">
+      <div className="p-4 md:p-6 border-t bg-white shrink-0">
+        <div className="flex gap-2 md:gap-4">
           <Input 
-            placeholder="Type your question here..." 
+            placeholder="Ask your question..." 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            className="flex-1 h-12 rounded-xl"
+            className="flex-1 h-12 md:h-14 rounded-xl md:rounded-2xl bg-slate-50 border-none shadow-inner text-sm"
           />
           <Button 
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="h-12 w-12 rounded-xl bg-primary text-white hover:bg-primary/90"
+            className="h-12 w-12 md:h-14 md:w-14 rounded-xl md:rounded-2xl bg-primary text-white shadow-lg active:scale-95 transition-transform"
           >
             <Send className="h-5 w-5" />
           </Button>
         </div>
-        <div className="mt-4 flex items-center gap-2 text-[10px] text-muted-foreground justify-center uppercase tracking-widest font-bold">
-           <Sparkles className="h-3 w-3 text-secondary" />
-           Powered by Gemini Flash & Vertex AI Search
+        <div className="mt-3 flex items-center gap-2 text-[9px] text-muted-foreground justify-center uppercase tracking-[0.2em] font-black">
+           <Sparkles className="h-3 w-3 text-secondary fill-current" />
+           Vertex AI Engine
         </div>
       </div>
     </div>

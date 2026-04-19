@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -33,7 +34,7 @@ import {
 
 const navItems = [
   {
-    title: "Overview",
+    title: "Home",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
@@ -128,7 +129,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       </Sidebar>
 
       <SidebarInset className="pb-24 md:pb-0">
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-6 border-b bg-white sticky top-0 z-30 shadow-sm md:shadow-none">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4 md:px-6 border-b bg-white sticky top-0 z-30 shadow-sm md:shadow-none">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="hidden md:flex -ml-1 text-primary" />
             <div className="md:hidden flex items-center gap-2">
@@ -138,47 +139,70 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <span className="font-headline font-bold text-xl text-primary">TUAI</span>
             </div>
             <div className="hidden md:block h-6 w-[1px] bg-slate-200 mx-4" />
-            <h1 className="font-headline font-bold text-lg text-slate-800 hidden md:block">
+            <h1 className="font-headline font-bold text-base md:text-lg text-slate-800 hidden sm:block">
               {navItems.find(item => item.href === pathname)?.title || "Dashboard"}
             </h1>
           </div>
-          <div className="flex items-center gap-4">
-             <div className="hidden sm:flex flex-col items-end leading-none">
-               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Region</span>
-               <span className="text-sm font-bold text-slate-700">Selangor, MY</span>
+          <div className="flex items-center gap-3 md:gap-4">
+             <div className="hidden xs:flex flex-col items-end leading-none">
+               <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Region</span>
+               <span className="text-xs md:text-sm font-bold text-slate-700">Selangor, MY</span>
              </div>
-             <Button variant="ghost" size="icon" className="rounded-xl bg-slate-100 text-primary">
-               <User className="h-5 w-5" />
+             <Button variant="ghost" size="icon" className="rounded-xl bg-slate-100 text-primary h-9 w-9">
+               <User className="h-4 w-4 md:h-5 md:w-5" />
              </Button>
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-8 bg-slate-50/50">
+        <main className="flex-1 p-4 md:p-8 bg-slate-50/50 pb-32 md:pb-8">
           {children}
         </main>
 
-        {/* Mobile Bottom Navigation */}
-        <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t flex md:hidden z-50 px-2 pb-safe-area-inset-bottom shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.2)]">
-          {navItems.map((item) => (
+        {/* Mobile Bottom Navigation - High Fidelity & Fixed Positioning */}
+        <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white/95 backdrop-blur-xl border-t flex md:hidden z-50 px-1 pb-safe-area-inset-bottom shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
+          {navItems.slice(0, 5).map((item) => (
             <Link 
               key={item.href}
               href={item.href}
               className={cn(
-                "flex-1 flex flex-col items-center justify-center gap-1 transition-all",
-                pathname === item.href ? "text-primary scale-105" : "text-slate-400"
+                "flex-1 flex flex-col items-center justify-center gap-1 transition-all relative",
+                pathname === item.href ? "text-primary" : "text-slate-400"
               )}
             >
+              {pathname === item.href && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-8 bg-primary rounded-b-full" />
+              )}
               <div className={cn(
-                "p-1.5 rounded-xl transition-all duration-300",
-                pathname === item.href ? "bg-primary/10 shadow-inner" : "bg-transparent"
+                "p-2 rounded-xl transition-all duration-300",
+                pathname === item.href ? "bg-primary/10" : "bg-transparent"
               )}>
                 <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-primary" : "text-slate-400")} />
               </div>
-              <span className={cn("text-[8px] font-bold uppercase tracking-tighter transition-opacity", pathname === item.href ? "opacity-100" : "opacity-60")}>
+              <span className={cn("text-[9px] font-black uppercase tracking-tighter transition-opacity", pathname === item.href ? "opacity-100" : "opacity-60")}>
                 {item.title}
               </span>
             </Link>
           ))}
+          <Link 
+            href="/dashboard/records"
+            className={cn(
+              "flex-1 flex flex-col items-center justify-center gap-1 transition-all relative",
+              pathname === "/dashboard/records" ? "text-primary" : "text-slate-400"
+            )}
+          >
+            {pathname === "/dashboard/records" && (
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-8 bg-primary rounded-b-full" />
+            )}
+            <div className={cn(
+              "p-2 rounded-xl transition-all duration-300",
+              pathname === "/dashboard/records" ? "bg-primary/10" : "bg-transparent"
+            )}>
+              <ClipboardList className={cn("h-5 w-5", pathname === "/dashboard/records" ? "text-primary" : "text-slate-400")} />
+            </div>
+            <span className={cn("text-[9px] font-black uppercase tracking-tighter transition-opacity", pathname === "/dashboard/records" ? "opacity-100" : "opacity-60")}>
+              Records
+            </span>
+          </Link>
         </nav>
       </SidebarInset>
     </SidebarProvider>

@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -13,7 +14,9 @@ import {
   LogOut,
   User,
   Newspaper,
-  Compass
+  Compass,
+  Settings,
+  Menu
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -31,7 +34,6 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar"
 
-// Standardized nav item titles to prevent hydration mismatch
 const navItems = [
   {
     title: "Overview",
@@ -73,13 +75,17 @@ const navItems = [
     href: "/dashboard/records",
     icon: ClipboardList,
   },
+  {
+    title: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
+  },
 ]
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [mounted, setMounted] = React.useState(false)
 
-  // Ensure client-side rendering for hydration safety
   React.useEffect(() => {
     setMounted(true)
   }, [])
@@ -88,7 +94,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" className="hidden md:flex border-r border-sidebar-border bg-sidebar">
+      {/* Sidebar now opens from the right as requested */}
+      <Sidebar side="right" collapsible="icon" className="border-l border-sidebar-border bg-sidebar">
         <SidebarHeader className="h-20 flex items-center px-6">
           <Link href="/" className="flex items-center gap-2 font-headline font-bold text-2xl text-sidebar-primary">
             <div className="h-8 w-8 bg-sidebar-primary rounded-lg flex items-center justify-center">
@@ -135,81 +142,38 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset className="pb-24 md:pb-0">
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4 md:px-6 border-b bg-white sticky top-0 z-30 shadow-sm md:shadow-none">
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4 md:px-6 border-b bg-white sticky top-0 z-30 shadow-sm">
+          {/* Logo on the left for both mobile and desktop */}
           <div className="flex items-center gap-2">
-            <SidebarTrigger className="hidden md:flex -ml-1 text-primary" />
-            <div className="md:hidden flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
                 <Sprout className="h-5 w-5 text-white" />
               </div>
               <span className="font-headline font-bold text-xl text-primary">TUAI</span>
             </div>
             <div className="hidden md:block h-6 w-[1px] bg-slate-200 mx-4" />
-            <h1 className="font-headline font-bold text-base md:text-lg text-slate-800 hidden sm:block">
+            <h1 className="font-headline font-bold text-base md:text-lg text-slate-800 hidden lg:block">
               {navItems.find(item => item.href === pathname)?.title || "Overview"}
             </h1>
           </div>
+
           <div className="flex items-center gap-3 md:gap-4">
-             <div className="hidden xs:flex flex-col items-end leading-none">
+             <div className="hidden xs:flex flex-col items-end leading-none mr-2">
                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Region</span>
                <span className="text-xs md:text-sm font-bold text-slate-700">Selangor, MY</span>
              </div>
              <Button variant="ghost" size="icon" className="rounded-xl bg-slate-100 text-primary h-9 w-9">
                <User className="h-4 w-4 md:h-5 md:w-5" />
              </Button>
+             {/* Sidebar trigger on the right as requested */}
+             <SidebarTrigger className="text-primary hover:bg-primary/5 rounded-xl h-10 w-10 border border-primary/20 shadow-sm" />
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-8 bg-slate-50/50 pb-32 md:pb-8">
+        <main className="flex-1 p-4 md:p-8 bg-slate-50/50 min-h-[calc(100vh-4rem)]">
           {children}
         </main>
-
-        <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white/95 backdrop-blur-xl border-t flex md:hidden z-50 px-1 pb-safe-area-inset-bottom shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
-          {navItems.slice(0, 5).map((item) => (
-            <Link 
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex-1 flex flex-col items-center justify-center gap-1 transition-all relative",
-                pathname === item.href ? "text-primary" : "text-slate-400"
-              )}
-            >
-              {pathname === item.href && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-8 bg-primary rounded-b-full" />
-              )}
-              <div className={cn(
-                "p-2 rounded-xl transition-all duration-300",
-                pathname === item.href ? "bg-primary/10" : "bg-transparent"
-              )}>
-                <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-primary" : "text-slate-400")} />
-              </div>
-              <span className={cn("text-[9px] font-black uppercase tracking-tighter", pathname === item.href ? "opacity-100" : "opacity-60")}>
-                {item.title}
-              </span>
-            </Link>
-          ))}
-          <Link 
-            href="/dashboard/records"
-            className={cn(
-              "flex-1 flex flex-col items-center justify-center gap-1 transition-all relative",
-              pathname === "/dashboard/records" ? "text-primary" : "text-slate-400"
-            )}
-          >
-            {pathname === "/dashboard/records" && (
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-8 bg-primary rounded-b-full" />
-            )}
-            <div className={cn(
-              "p-2 rounded-xl transition-all duration-300",
-              pathname === "/dashboard/records" ? "bg-primary/10" : "bg-transparent"
-            )}>
-              <ClipboardList className={cn("h-5 w-5", pathname === "/dashboard/records" ? "text-primary" : "text-slate-400")} />
-            </div>
-            <span className={cn("text-[9px] font-black uppercase tracking-tighter", pathname === "/dashboard/records" ? "opacity-100" : "opacity-60")}>
-              Records
-            </span>
-          </Link>
-        </nav>
       </SidebarInset>
     </SidebarProvider>
   )

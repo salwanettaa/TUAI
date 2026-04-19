@@ -1,12 +1,15 @@
-
 "use client"
 
 import * as React from "react"
-import { MessageSquare, Send, Loader2, User, Bot, Sparkles, ThermometerSun, Info } from "lucide-react"
+import { MessageSquare, Send, Loader2, User, Bot, Sparkles, ThermometerSun, Info, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { chatAdvisor } from "@/ai/flows/chat-advisor-flow"
+import { useFirestore, useUser, useDoc, useMemoFirebase } from "@/firebase"
+import { doc } from "firebase/firestore"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import Link from "next/link"
 
 type Message = {
   role: "user" | "assistant"
@@ -14,6 +17,13 @@ type Message = {
 }
 
 export default function ChatAdvisorPage() {
+  const { user } = useUser()
+  const db = useFirestore()
+  
+  const userRef = useMemoFirebase(() => (db && user ? doc(db, "users", user.uid) : null), [db, user])
+  const { data: profile } = useDoc(userRef)
+  const geminiKey = profile?.geminiApiKey
+
   const [messages, setMessages] = React.useState<Message[]>([
     { role: "assistant", content: "Hello Farmer! I'm your TUAI Copilot. How can I help you with your crops today?" }
   ])
@@ -23,6 +33,7 @@ export default function ChatAdvisorPage() {
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
+    if (!geminiKey) return
 
     const userMsg = input.trim()
     setInput("")
@@ -30,10 +41,10 @@ export default function ChatAdvisorPage() {
     setIsLoading(true)
 
     try {
-      const response = await chatAdvisor({ userQuestion: userMsg })
+      const response = await chatAdvisor({ userQuestion: userMsg, apiKey: geminiKey })
       setMessages(prev => [...prev, { role: "assistant", content: response.advice }])
     } catch (error) {
-      setMessages(prev => [...prev, { role: "assistant", content: "I'm having trouble connecting. Please try again." }])
+      setMessages(prev => [...prev, { role: "assistant", content: "I'm having trouble connecting. Ensure your API key is correct in Settings." }])
     } finally {
       setIsLoading(false)
     }
@@ -58,14 +69,22 @@ export default function ChatAdvisorPage() {
           </div>
           <div>
             <h2 className="text-lg md:text-xl font-headline font-bold leading-tight">TUAI Copilot</h2>
-            <p className="text-primary-foreground/70 text-[10px] md:text-xs">Grounded in local ASEAN data</p>
+            <p className="text-primary-foreground/70 text-[10px] md:text-xs">Powered by your Gemini key</p>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest">
-           <ThermometerSun className="h-3.5 w-3.5" />
-           <span>32°C</span>
-        </div>
       </div>
+
+      {!geminiKey && (
+        <div className="p-4 bg-orange-50 border-b border-orange-100">
+           <Alert variant="default" className="bg-orange-100 border-none rounded-2xl">
+              <AlertCircle className="h-4 w-4 text-orange-600" />
+              <AlertTitle className="text-orange-900 font-bold">API Key Required</AlertTitle>
+              <AlertDescription className="text-orange-800 text-xs">
+                Please add your Gemini API Key in <Link href="/dashboard/settings" className="underline font-bold">Settings</Link> to use the Copilot.
+              </AlertDescription>
+           </Alert>
+        </div>
+      )}
 
       {/* Chat Area */}
       <ScrollArea className="flex-1 p-4 md:p-6 bg-accent/5" ref={scrollAreaRef}>
@@ -98,45 +117,24 @@ export default function ChatAdvisorPage() {
         </div>
       </ScrollArea>
 
-      {/* Quick suggestions - Responsive scrollable bar */}
-      <div className="px-4 py-2 bg-accent/5 flex gap-2 overflow-x-auto no-scrollbar pb-3 border-t md:border-t-0 shrink-0">
-        {[
-          "Weather in Selangor?",
-          "Padi subsidy 2024?",
-          "Urea shortage alerts",
-          "Soil health tips"
-        ].map((s, i) => (
-          <button 
-            key={i} 
-            onClick={() => setInput(s)}
-            className="whitespace-nowrap px-4 py-1.5 bg-white border rounded-full text-[10px] md:text-xs font-bold text-muted-foreground hover:border-primary hover:text-primary transition-all shadow-sm active:scale-95"
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-
       {/* Input Area */}
       <div className="p-4 md:p-6 border-t bg-white shrink-0">
         <div className="flex gap-2 md:gap-4">
           <Input 
-            placeholder="Ask your question..." 
+            placeholder={geminiKey ? "Ask your question..." : "Add API key to chat..."}
             value={input}
+            disabled={!geminiKey}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             className="flex-1 h-12 md:h-14 rounded-xl md:rounded-2xl bg-slate-50 border-none shadow-inner text-sm"
           />
           <Button 
             onClick={handleSend}
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input.trim() || !geminiKey}
             className="h-12 w-12 md:h-14 md:w-14 rounded-xl md:rounded-2xl bg-primary text-white shadow-lg active:scale-95 transition-transform"
           >
             <Send className="h-5 w-5" />
           </Button>
-        </div>
-        <div className="mt-3 flex items-center gap-2 text-[9px] text-muted-foreground justify-center uppercase tracking-[0.2em] font-black">
-           <Sparkles className="h-3 w-3 text-secondary fill-current" />
-           Vertex AI Engine
         </div>
       </div>
     </div>

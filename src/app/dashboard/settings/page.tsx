@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -7,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { useFirestore, useUser, useDoc } from "@/firebase"
+import { useFirestore, useUser, useDoc, useMemoFirebase } from "@/firebase"
 import { doc } from "firebase/firestore"
 import { updateDocumentNonBlocking } from "@/firebase/non-blocking-updates"
 import { useToast } from "@/hooks/use-toast"
@@ -18,7 +17,7 @@ export default function SettingsPage() {
   const db = useFirestore()
   const { toast } = useToast()
   
-  const userRef = React.useMemo(() => {
+  const userRef = useMemoFirebase(() => {
     if (!db || !user) return null
     return doc(db, "users", user.uid)
   }, [db, user])
@@ -46,7 +45,7 @@ export default function SettingsPage() {
       
       toast({
         title: "Settings Saved",
-        description: "Your Gemini API configuration has been updated successfully.",
+        description: "Your Gemini API key is now active for all features.",
       })
     } catch (error) {
       toast({
@@ -97,7 +96,7 @@ export default function SettingsPage() {
               <Sparkles className="h-4 w-4 text-emerald-600" />
               <AlertTitle className="text-emerald-900 font-bold">Encrypted Storage</AlertTitle>
               <AlertDescription className="text-emerald-800/80 text-xs">
-                Your keys are stored securely in your private Firestore profile and are only used for system communication.
+                Your Gemini key is stored securely in your private profile. You are responsible for your own token usage.
               </AlertDescription>
             </Alert>
 
@@ -115,7 +114,7 @@ export default function SettingsPage() {
                 />
               </div>
               <p className="text-[10px] text-muted-foreground font-medium ml-1">
-                Used to power your AI diagnostics, chat copilot, and risk intelligence.
+                This key powers Scans, Chat, Risk Intelligence, and News briefings.
               </p>
             </div>
           </CardContent>
@@ -133,20 +132,6 @@ export default function SettingsPage() {
                Save Changes
              </Button>
           </CardFooter>
-        </Card>
-
-        <Card className="rounded-[2.5rem] border-none shadow-xl bg-white p-8 space-y-4 border-l-[12px] border-l-orange-500">
-          <div className="flex items-start gap-4">
-             <div className="h-10 w-10 bg-orange-100 rounded-xl flex items-center justify-center shrink-0">
-               <AlertCircle className="h-6 w-6 text-orange-600" />
-             </div>
-             <div>
-               <h3 className="text-lg font-bold text-slate-800">Advanced System Access</h3>
-               <p className="text-xs text-muted-foreground leading-relaxed mt-1 font-medium">
-                 Your Gemini key enables autonomous analysis grounded in regional data. Keep this key private.
-               </p>
-             </div>
-          </div>
         </Card>
       </div>
     </div>

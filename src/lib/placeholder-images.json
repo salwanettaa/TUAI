@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-farm",
+      "description": "Lush green farm fields with modern technology overlay",
+      "imageUrl": "https://picsum.photos/seed/tuai-hero/1200/800",
+      "imageHint": "green farm"
+    },
+    {
+      "id": "crop-disease",
+      "description": "Close up of a crop leaf with disease spots",
+      "imageUrl": "https://picsum.photos/seed/tuai-disease/600/400",
+      "imageHint": "crop disease"
+    },
+    {
+      "id": "farmer-phone",
+      "description": "Farmer using a smartphone in a field",
+      "imageUrl": "https://picsum.photos/seed/tuai-farmer/800/600",
+      "imageHint": "farmer smartphone"
+    }
+  ]
 }

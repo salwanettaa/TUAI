@@ -1,8 +1,7 @@
-
 "use client"
 
 import * as React from "react"
-import { Newspaper, Loader2, Sparkles, AlertTriangle, ArrowRight, Share2, Globe } from "lucide-react"
+import { Newspaper, Loader2, Sparkles, AlertTriangle, ArrowRight, Share2, Globe, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { generateNewsArticle, type NewsAnalysisOutput } from "@/ai/flows/news-analysis-flow"
@@ -11,16 +10,15 @@ import { cn } from "@/lib/utils"
 
 export default function NewsPage() {
   const [article, setArticle] = React.useState<NewsAnalysisOutput | null>(null)
-  const [loading, setLoading] = React.useState(true)
+  const [loading, setLoading] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
   const { toast } = useToast()
 
   React.useEffect(() => {
     setMounted(true)
-    fetchArticle()
   }, [])
 
-  const fetchArticle = async (topic: string = "Iran-US Tensions impact on Malaysian Food Security and Palm Oil Supply") => {
+  const fetchArticle = async (topic: string = "Global food supply chain stressors for ASEAN 2024") => {
     setLoading(true)
     try {
       const data = await generateNewsArticle({ topic })
@@ -59,36 +57,49 @@ export default function NewsPage() {
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-slate-900 leading-tight">Global News Analysis</h2>
           <p className="text-sm text-muted-foreground mt-2 font-medium">Grounded agricultural impact assessments written by Gemini Pro.</p>
         </div>
-        <Button 
-          variant="outline" 
-          className="rounded-xl border-primary text-primary h-12 w-full md:w-auto" 
-          onClick={() => fetchArticle()}
-          disabled={loading}
-        >
-          {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Globe className="h-4 w-4 mr-2" />}
-          Refresh Intel
-        </Button>
       </div>
 
-      {loading ? (
+      {!article && !loading && (
+        <Card className="rounded-[2.5rem] border-2 border-dashed border-primary/20 bg-white/50 p-12 text-center space-y-6">
+          <div className="h-20 w-20 bg-primary/10 rounded-[2rem] flex items-center justify-center mx-auto">
+            <Newspaper className="h-10 w-10 text-primary" />
+          </div>
+          <div className="max-w-md mx-auto space-y-2">
+            <h3 className="text-2xl font-bold text-slate-800">No Intelligence Generated</h3>
+            <p className="text-slate-500 text-sm italic font-medium">Click the button below to scalp the latest global news and generate an impact analysis for Malaysian agriculture.</p>
+          </div>
+          <Button 
+            size="lg"
+            className="rounded-2xl bg-primary text-white h-14 px-10 font-bold shadow-xl shadow-primary/20 active:scale-95 transition-all"
+            onClick={() => fetchArticle()}
+          >
+            <Sparkles className="h-5 w-5 mr-2" />
+            Generate Latest Briefing
+          </Button>
+        </Card>
+      )}
+
+      {loading && (
         <div className="flex flex-col items-center justify-center py-24 gap-8">
           <div className="relative">
             <Loader2 className="h-20 w-20 animate-spin text-primary opacity-20" />
             <Sparkles className="h-10 w-10 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
           </div>
           <div className="text-center space-y-3">
-            <h3 className="text-2xl font-bold text-slate-800">AI is writing your article...</h3>
+            <h3 className="text-2xl font-bold text-slate-800">AI is scalping news...</h3>
             <p className="text-sm text-muted-foreground animate-pulse max-w-[280px] mx-auto leading-relaxed">Analyzing global stressors and local supply chains for Malaysia.</p>
           </div>
         </div>
-      ) : article ? (
+      )}
+
+      {article && !loading && (
         <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
           <Card className="rounded-[2.5rem] border-none shadow-2xl overflow-hidden bg-white">
             <div className={`h-4 ${riskColors[article.riskLevel]}`} />
             <CardHeader className="p-8 md:p-12 pb-6">
               <div className="flex items-center justify-between mb-8">
                  <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    <Newspaper className="h-4 w-4 text-primary" />
+                    <TrendingUp className="h-4 w-4 text-primary" />
                     Latest Analysis • {formattedDate}
                  </div>
                  <div className={cn(
@@ -131,10 +142,10 @@ export default function NewsPage() {
               </div>
             </CardContent>
             <CardFooter className="bg-slate-50/50 p-8 md:p-12 border-t flex flex-col md:flex-row justify-between items-center gap-6">
-               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Verified by TUAI Intelligence Engine • Grounded Data</span>
+               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Verified by TUAI Intelligence Engine</span>
                <div className="flex gap-3 w-full md:w-auto">
-                 <Button variant="outline" className="flex-1 md:flex-none rounded-xl h-14 font-bold shadow-sm">
-                   <Share2 className="h-4 w-4 mr-2" /> Share
+                 <Button variant="outline" className="flex-1 md:flex-none rounded-xl h-14 font-bold shadow-sm" onClick={() => fetchArticle()}>
+                   Refresh Analysis
                  </Button>
                  <Button className="flex-1 md:flex-none rounded-xl bg-primary text-white h-14 font-bold shadow-lg shadow-primary/20">
                    Full Report <ArrowRight className="ml-2 h-4 w-4" />
@@ -142,24 +153,8 @@ export default function NewsPage() {
                </div>
             </CardFooter>
           </Card>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-             {["Fertilizer Shortage", "Fuel Subsidies", "Weather Shocks"].map((tag, i) => (
-               <button 
-                key={i} 
-                onClick={() => fetchArticle(tag + " impact on Malaysia Padi")}
-                className="p-8 bg-white rounded-[2.5rem] border border-slate-100 hover:border-primary transition-all text-left group shadow-sm active:scale-95 hover:shadow-xl"
-               >
-                 <div className="h-12 w-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
-                    <Sparkles className="h-6 w-6 text-slate-400 group-hover:text-primary" />
-                 </div>
-                 <h4 className="font-bold text-slate-800 text-lg">Analyze {tag}</h4>
-                 <p className="text-[10px] text-muted-foreground mt-1 uppercase font-black tracking-widest">Deep dive intelligence</p>
-               </button>
-             ))}
-          </div>
         </div>
-      ) : null}
+      )}
     </div>
   )
 }

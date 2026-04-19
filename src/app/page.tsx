@@ -1,11 +1,31 @@
+
+'use client';
+
+import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Sprout, ShieldCheck, MapPin, Zap, ArrowRight, MessageCircle, ClipboardList, BarChart3, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LandingPage() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'hero-farm');
+  const { toast } = useToast();
+
+  const handleGimmick = (feature: string) => {
+    toast({
+      title: `${feature} Initialized`,
+      description: "This is a prototype gimmick. The full system is launching soon!",
+    });
+  };
+
+  const handleWhitepaper = () => {
+    toast({
+      title: "Whitepaper Downloaded",
+      description: "TUAI Vision 2026: The Roadmap to Zero Export Dependency has been saved.",
+    });
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white selection:bg-primary/20 scroll-smooth">
@@ -28,7 +48,7 @@ export default function LandingPage() {
           <Link href="/login">
             <Button variant="ghost" className="font-bold hover:bg-primary/5">Login</Button>
           </Link>
-          <Link href="/signup">
+          <Link href="/login">
             <Button className="bg-primary hover:bg-primary/90 rounded-full px-8 font-bold shadow-md hover:shadow-lg transition-all">
               Get Started
             </Button>
@@ -55,7 +75,11 @@ export default function LandingPage() {
                 TUAI moves beyond simple advice. Our AI agents monitor global risks, diagnose crop diseases, and execute action plans to secure your harvest.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 rounded-full text-lg h-16 px-10 shadow-xl shadow-primary/20 group font-bold">
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 rounded-full text-lg h-16 px-10 shadow-xl shadow-primary/20 group font-bold"
+                  onClick={() => handleGimmick("Trial Path")}
+                >
                   Start Your Trial 
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -75,6 +99,7 @@ export default function LandingPage() {
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     priority
+                    unoptimized={true}
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -116,8 +141,12 @@ export default function LandingPage() {
                 { title: "Records Ledger", desc: "Keep all your harvest and treatment data secure and accessible anywhere.", icon: ClipboardList, color: "bg-purple-500" },
                 { title: "Smart Alerts", desc: "Push notifications for localized weather risks and market fluctuations.", icon: Zap, color: "bg-yellow-500" }
               ].map((f, i) => (
-                <div key={i} className="p-10 rounded-[32px] bg-white border border-slate-100 hover:border-primary/20 transition-all hover:shadow-2xl hover:shadow-primary/5 group">
-                  <div className={`h-12 w-12 ${f.color} rounded-xl flex items-center justify-center mb-8 shadow-lg shadow-${f.color.split('-')[0]}-200 group-hover:-rotate-6 transition-transform`}>
+                <div 
+                  key={i} 
+                  className="p-10 rounded-[32px] bg-white border border-slate-100 hover:border-primary/20 transition-all hover:shadow-2xl hover:shadow-primary/5 group cursor-pointer"
+                  onClick={() => handleGimmick(f.title)}
+                >
+                  <div className={`h-12 w-12 ${f.color} rounded-xl flex items-center justify-center mb-8 shadow-lg shadow-black/10 group-hover:-rotate-6 transition-transform`}>
                     <f.icon className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold mb-4 text-slate-900">{f.title}</h3>
@@ -140,7 +169,7 @@ export default function LandingPage() {
                 <p className="text-xl text-primary-foreground/80 leading-relaxed mb-8 font-medium">
                   We believe that technology shouldn't just be for big corporations. TUAI was founded to bring the power of Generative AI to every smallholder farmer in Southeast Asia, ensuring food security for the next generation.
                 </p>
-                <Button variant="secondary" size="lg" className="rounded-full font-bold px-8">Read Our Whitepaper</Button>
+                <Button variant="secondary" size="lg" className="rounded-full font-bold px-8" onClick={handleWhitepaper}>Read Our Whitepaper</Button>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-[32px] p-8 border border-white/20">
                  <div className="space-y-6">
@@ -197,25 +226,27 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-12">
               <div className="flex flex-col gap-4">
                 <span className="text-white font-bold">Product</span>
-                <Link href="#features" className="hover:text-primary transition-colors">Features</Link>
-                <Link href="#" className="hover:text-primary transition-colors">Pricing</Link>
+                <button onClick={() => handleGimmick("Features")} className="text-left hover:text-primary transition-colors">Features</button>
+                <button onClick={() => handleGimmick("Pricing")} className="text-left hover:text-primary transition-colors">Pricing</button>
               </div>
               <div className="flex flex-col gap-4">
                 <span className="text-white font-bold">Company</span>
-                <Link href="#mission" className="hover:text-primary transition-colors">About Us</Link>
-                <Link href="#" className="hover:text-primary transition-colors">Careers</Link>
+                <button onClick={() => handleGimmick("About")} className="text-left hover:text-primary transition-colors">About Us</button>
+                <button onClick={() => handleGimmick("Careers")} className="text-left hover:text-primary transition-colors">Careers</button>
               </div>
               <div className="flex flex-col gap-4">
                 <span className="text-white font-bold">Legal</span>
-                <Link href="#" className="hover:text-primary transition-colors">Privacy</Link>
-                <Link href="#" className="hover:text-primary transition-colors">Terms</Link>
+                <button onClick={() => handleGimmick("Privacy")} className="text-left hover:text-primary transition-colors">Privacy</button>
+                <button onClick={() => handleGimmick("Terms")} className="text-left hover:text-primary transition-colors">Terms</button>
               </div>
             </div>
           </div>
           <div className="pt-8 border-t border-slate-800 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-            <p>© 2024 TUAI Agriculture. All rights reserved. Malaysia-first.</p>
+            <p>© 2026 TUAI Agriculture. All rights reserved. Malaysia-first.</p>
             <div className="flex gap-6">
-              {/* Social icons could go here */}
+              {/* Gimmick social buttons */}
+              <button onClick={() => handleGimmick("Twitter")} className="hover:text-primary transition-colors uppercase tracking-widest font-black text-[10px]">X.com</button>
+              <button onClick={() => handleGimmick("LinkedIn")} className="hover:text-primary transition-colors uppercase tracking-widest font-black text-[10px]">LinkedIn</button>
             </div>
           </div>
         </div>

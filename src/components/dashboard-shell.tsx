@@ -140,7 +140,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </div>
             <div className="hidden md:block h-6 w-[1px] bg-slate-200 mx-4" />
             <h1 className="font-headline font-bold text-base md:text-lg text-slate-800 hidden sm:block">
-              {navItems.find(item => item.href === pathname)?.title || "Dashboard"}
+              {navItems.find(item => item.href === pathname)?.title || "Home"}
             </h1>
           </div>
           <div className="flex items-center gap-3 md:gap-4">

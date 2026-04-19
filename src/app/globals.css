@@ -24,7 +24,7 @@
     --border: 200 20% 85%;
     --input: 200 20% 85%;
     --ring: 201 71% 35%;
-    --radius: 0.75rem;
+    --radius: 1rem;
     --sidebar-background: 201 71% 10%;
     --sidebar-foreground: 200 20% 96%;
     --sidebar-primary: 174 57% 59%;
@@ -33,28 +33,6 @@
     --sidebar-accent-foreground: 200 20% 96%;
     --sidebar-border: 201 71% 15%;
     --sidebar-ring: 174 57% 59%;
-  }
-
-  .dark {
-    --background: 201 71% 5%;
-    --foreground: 200 20% 96%;
-    --card: 201 71% 8%;
-    --card-foreground: 200 20% 96%;
-    --popover: 201 71% 8%;
-    --popover-foreground: 200 20% 96%;
-    --primary: 174 57% 59%;
-    --primary-foreground: 201 71% 10%;
-    --secondary: 201 71% 25%;
-    --secondary-foreground: 200 20% 96%;
-    --muted: 201 71% 15%;
-    --muted-foreground: 201 30% 60%;
-    --accent: 201 71% 15%;
-    --accent-foreground: 174 57% 59%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 201 71% 15%;
-    --input: 201 71% 15%;
-    --ring: 174 57% 59%;
   }
 }
 
@@ -66,15 +44,12 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
     overflow-x: hidden;
-  }
-  
-  /* Hide scrollbars globally while maintaining functionality */
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  html {
     scrollbar-width: none;
     -ms-overflow-style: none;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -90,8 +65,4 @@
 
 .glass-card {
   @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
-}
-
-.gradient-bg {
-  background: linear-gradient(135deg, #f0f4f6 0%, #d9e4e9 100%);
 }

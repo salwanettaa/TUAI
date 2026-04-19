@@ -16,21 +16,21 @@ import Link from "next/link"
 const INTEL_POOL: RiskIntelOutput[] = [
   {
     alertLevel: "Medium",
-    potentialImpactSummary: "Malaysia's agricultural sector is currently facing moderate risk due to global fuel price fluctuations and export quotas in China for urea production. Local supply chains for Padi are stable but costs are increasing due to maritime shipping delays.",
+    potentialImpactSummary: "The agricultural sector is currently facing moderate risk due to global fuel price fluctuations and export quotas for urea production. Local supply chains are stable but costs are increasing due to maritime shipping delays.",
     recommendedActions: [
-      "Pre-order essential fertilizers for the next planting cycle to hedge against price hikes.",
-      "Adopt soil moisture sensors to reduce irrigation costs by 15%.",
-      "Diversify short-term crops to maintain cash flow during Padi off-seasons.",
-      "Monitor federal policy updates on fuel and fertilizer subsidies regularly."
+      "Pre-order essential fertilizers for the next planting cycle.",
+      "Adopt soil moisture sensors to reduce irrigation costs.",
+      "Diversify short-term crops to maintain cash flow.",
+      "Monitor federal policy updates on fuel and fertilizer subsidies."
     ]
   },
   {
     alertLevel: "High",
-    potentialImpactSummary: "Significant risk detected in chemical supply chains. Major producers in East Asia have implemented temporary export bans on specific pesticide active ingredients, which may cause a 20% price surge locally within 30 days.",
+    potentialImpactSummary: "Significant risk detected in chemical supply chains. Major producers have implemented temporary export bans on specific pesticide active ingredients, which may cause a 20% price surge locally.",
     recommendedActions: [
       "Identify local organic alternatives for pest control.",
       "Verify existing pesticide stock levels and shelf life.",
-      "Engage with agricultural officers for emergency active ingredient substitutes."
+      "Engage with agricultural officers for ingredient substitutes."
     ]
   }
 ]
@@ -68,23 +68,16 @@ export default function RiskIntelPage() {
     try {
       const data = await riskIntel({
         region: "Malaysia",
-        newsSummary: "Global shipping delays reported in Red Sea. India maintains export ban on non-basmati rice. Crude oil prices stabilizing around $80/barrel.",
+        newsSummary: "Global shipping delays reported. Crude oil prices stabilizing around $80/barrel. Regional rice export bans maintained.",
         commodityPrices: { "Fertilizer (NPK)": 820, "Diesel": 2.15, "Padi Grade A": 1.45 },
-        exportImportBans: ["Indian Rice Export Ban", "China Urea Export Quotas"],
+        exportImportBans: ["Regional Rice Export Ban", "China Urea Export Quotas"],
         policyUpdates: "New federal subsidy for organic soil enhancers starting next month.",
         apiKey: geminiKey
       })
       setIntel(data)
-      toast({
-        title: "Risk Scan Complete",
-        description: "Regional stressors have been updated with current market data."
-      })
+      toast({ title: "Risk Scan Complete" })
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Scan Failed",
-        description: "Could not retrieve live risk data at this time."
-      })
+      toast({ variant: "destructive", title: "Scan Failed" })
     } finally {
       setLoading(false)
     }
@@ -103,12 +96,12 @@ export default function RiskIntelPage() {
     <div className="max-w-6xl mx-auto space-y-8 pb-32 px-1 no-scrollbar">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
-            <Globe className="h-3 w-3" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
+            <Globe className="h-3.5 w-3.5" />
             Supply Chain Intelligence
           </div>
           <h2 className="text-3xl font-headline font-bold text-primary">Risk Intel & Shock Prediction</h2>
-          <p className="text-muted-foreground font-medium">Daily regional assessments grounded in global agricultural shocks.</p>
+          <p className="text-muted-foreground font-medium">Grounded regional assessments updated daily.</p>
         </div>
         <Button 
           onClick={fetchIntel}
@@ -116,16 +109,16 @@ export default function RiskIntelPage() {
           disabled={loading}
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
-          Run AI Risk Scan
+          Run Global Risk Scan
         </Button>
       </div>
 
       {!geminiKey && (
-        <Alert variant="default" className="bg-orange-100 border-none rounded-2xl shadow-sm">
+        <Alert variant="default" className="bg-orange-50 border-orange-100 rounded-2xl shadow-sm">
           <AlertCircle className="h-5 w-5 text-orange-600" />
-          <AlertTitle className="text-orange-900 font-bold">Token Responsibility</AlertTitle>
+          <AlertTitle className="text-orange-900 font-bold">API Key Awareness</AlertTitle>
           <AlertDescription className="text-orange-800 text-xs">
-            To use live risk scanning, please add your own Gemini API key in <Link href="/dashboard/settings" className="underline font-bold">Settings</Link>.
+            To use live risk scanning beyond the daily rotation, add your own Gemini API key in <Link href="/dashboard/settings" className="underline font-bold">Settings</Link>.
           </AlertDescription>
         </Alert>
       )}
@@ -144,9 +137,6 @@ export default function RiskIntelPage() {
                 {intel.alertLevel} Alert
               </div>
             </div>
-            <CardDescription className="text-base mt-2 font-medium">
-              Daily analysis based on geopolitical shifts and commodity market fluctuations.
-            </CardDescription>
           </CardHeader>
           <CardContent className="bg-white p-8 pt-4 space-y-8">
             <div className="p-6 rounded-2xl bg-slate-50 border-l-4 border-l-primary space-y-3 shadow-sm">
@@ -158,11 +148,11 @@ export default function RiskIntelPage() {
             </div>
 
             <div className="space-y-4">
-              <h4 className="font-headline font-bold text-lg">Preventative Actions for Farmers</h4>
+              <h4 className="font-headline font-bold text-lg">Preventative Actions</h4>
               <div className="grid md:grid-cols-2 gap-4">
                 {intel.recommendedActions.map((action, i) => (
-                  <div key={i} className="flex gap-4 p-5 rounded-2xl bg-white border border-slate-100 hover:border-primary transition-all shadow-sm hover:shadow-md group">
-                    <div className="h-8 w-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-black text-xs group-hover:scale-110 transition-transform">
+                  <div key={i} className="flex gap-4 p-5 rounded-2xl bg-white border border-slate-100 transition-all hover:border-primary">
+                    <div className="h-8 w-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-black text-xs">
                       {i + 1}
                     </div>
                     <p className="text-sm font-bold text-slate-700 leading-relaxed">{action}</p>
@@ -173,16 +163,13 @@ export default function RiskIntelPage() {
           </CardContent>
           <div className="bg-slate-50/50 p-6 flex items-center justify-between border-t text-[10px] font-black text-muted-foreground uppercase tracking-widest">
              <span>Verified TUAI Intelligence Engine</span>
-             <div className="flex items-center gap-1.5">
-               <Sparkles className="h-3.5 w-3.5 text-secondary fill-current" />
-               Grounded in ASEAN Data
-             </div>
+             <span>Grounded in ASEAN Data</span>
           </div>
         </Card>
 
         <div className="space-y-6">
            <Card className="rounded-[2.5rem] border-none shadow-xl overflow-hidden bg-white">
-             <CardHeader className="bg-primary text-white p-6 pb-6">
+             <CardHeader className="bg-primary text-white p-6">
                 <CardTitle className="flex items-center gap-2 text-lg font-bold">
                   <BarChart3 className="h-5 w-5" />
                   Live Market Shocks
@@ -209,8 +196,8 @@ export default function RiskIntelPage() {
                     </div>
                   ))}
                 </div>
-                <Button className="w-full mt-10 bg-slate-100 text-primary hover:bg-primary hover:text-white rounded-xl h-14 font-black text-xs uppercase tracking-widest transition-all shadow-sm">
-                  View Full Market Index
+                <Button variant="outline" className="w-full mt-10 rounded-xl h-14 font-black text-[10px] uppercase tracking-widest border-primary/20 text-primary hover:bg-primary/5 transition-all">
+                  Full Market Index
                 </Button>
              </CardContent>
            </Card>

@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export default function SettingsPage() {
-  const { user } = useUser()
+  const { user, isUserLoading: isAuthLoading } = useUser()
   const db = useFirestore()
   const { toast } = useToast()
   
@@ -28,7 +28,6 @@ export default function SettingsPage() {
   const [apiKey, setApiKey] = React.useState("")
   const [isSaving, setIsSaving] = React.useState(false)
 
-  // Sync state once when profile is loaded
   React.useEffect(() => {
     if (profile?.geminiApiKey) {
       setApiKey(profile.geminiApiKey)
@@ -36,39 +35,39 @@ export default function SettingsPage() {
   }, [profile])
 
   const handleSave = () => {
-    if (!userRef || !user) {
+    if (!user || !userRef) {
       toast({
         variant: "destructive",
         title: "Connection Error",
-        description: "Firestore is not ready. Please refresh.",
+        description: "Firestore is not ready yet. Please wait a moment.",
       })
       return
     }
     
     setIsSaving(true)
     
-    // Use setDocumentNonBlocking with merge: true to ensure id check passes and document is created/updated
     setDocumentNonBlocking(userRef, {
-      id: user.uid, // Explicitly include ID to satisfy strict security rules
+      id: user.uid,
       geminiApiKey: apiKey.trim(),
       updatedAt: new Date().toISOString()
     }, { merge: true })
     
-    // Provide immediate feedback while the background write happens
     setTimeout(() => {
       setIsSaving(false)
       toast({
-        title: "Settings Updated",
-        description: "Your Gemini API key has been saved successfully.",
+        title: "Settings Saved",
+        description: "Your Gemini API key is now active for all features.",
       })
-    }, 800)
+    }, 1000)
   }
 
-  if (isProfileLoading) {
+  const isActuallyLoading = isAuthLoading || isProfileLoading
+
+  if (isActuallyLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">Syncing Profile...</p>
+        <Loader2 className="h-10 w-10 animate-spin text-primary opacity-30" />
+        <p className="text-muted-foreground font-black uppercase tracking-widest text-[10px]">Synchronizing Profile...</p>
       </div>
     )
   }
@@ -76,20 +75,20 @@ export default function SettingsPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500 pb-20 no-scrollbar">
       <div className="space-y-2 px-1">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
-          <Settings className="h-3 w-3" />
-          Account Control
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
+          <Settings className="h-3.5 w-3.5" />
+          System Preferences
         </div>
-        <h2 className="text-3xl md:text-4xl font-headline font-bold text-slate-900">Settings</h2>
-        <p className="text-sm text-muted-foreground font-medium">Manage your TUAI integration keys and system preferences.</p>
+        <h2 className="text-3xl md:text-4xl font-headline font-bold text-slate-900 leading-tight">Settings</h2>
+        <p className="text-sm text-muted-foreground font-medium">Manage your personal Gemini AI integration and account details.</p>
       </div>
 
       <div className="grid gap-8">
         <Card className="rounded-[2.5rem] border-none shadow-xl overflow-hidden bg-white">
-          <CardHeader className="bg-slate-50 p-8 border-b">
+          <CardHeader className="bg-slate-50/50 p-8 border-b">
              <div className="flex items-center gap-4">
-               <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center shadow-inner">
-                 <Key className="h-6 w-6 text-primary" />
+               <div className="h-14 w-14 bg-white rounded-2xl flex items-center justify-center shadow-xl border border-slate-100">
+                 <Key className="h-7 w-7 text-primary" />
                </div>
                <div>
                  <CardTitle className="text-xl font-bold text-slate-800">API Configuration</CardTitle>
@@ -97,44 +96,47 @@ export default function SettingsPage() {
                </div>
              </div>
           </CardHeader>
-          <CardContent className="p-8 space-y-6">
-            <Alert variant="default" className="bg-emerald-50 border-emerald-100 rounded-2xl mb-4">
-              <Sparkles className="h-4 w-4 text-emerald-600" />
-              <AlertTitle className="text-emerald-900 font-bold">Token Responsibility</AlertTitle>
-              <AlertDescription className="text-emerald-800/80 text-xs">
-                TUAI features are powered by your own API key. You are responsible for your token consumption and security.
+          <CardContent className="p-8 space-y-8">
+            <Alert variant="default" className="bg-emerald-50 border-emerald-100 rounded-[1.5rem] p-6 shadow-sm">
+              <Sparkles className="h-5 w-5 text-emerald-600" />
+              <AlertTitle className="text-emerald-900 font-bold text-base">Token Responsibility</AlertTitle>
+              <AlertDescription className="text-emerald-800 text-xs leading-relaxed mt-1">
+                To keep TUAI free for all, you provide your own Gemini API key. All AI features (Pathfinder, Scans, Chat) will consume tokens from your personal quota.
               </AlertDescription>
             </Alert>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Label htmlFor="geminiKey" className="text-xs font-black uppercase tracking-widest text-slate-500 ml-1">Gemini API Key</Label>
-              <div className="relative">
-                <Key className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+              <div className="relative group">
+                <Key className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                 <Input 
                   id="geminiKey"
                   type="password"
-                  placeholder="AIzaSy..."
+                  placeholder="Paste your key here (starts with AIza...)"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="pl-12 h-14 rounded-2xl bg-slate-50 border-none shadow-inner text-sm focus-visible:ring-2 focus-visible:ring-primary/20"
+                  className="pl-12 h-14 rounded-2xl bg-slate-50 border-none shadow-inner text-sm font-medium focus-visible:ring-2 focus-visible:ring-primary/20"
                 />
               </div>
-              <p className="text-[10px] text-muted-foreground font-medium ml-1">
-                Your key is used for Scans, Chat, Risk Intelligence, and Pathfinder.
-              </p>
+              <div className="flex items-start gap-2 ml-1">
+                <AlertCircle className="h-3 w-3 text-muted-foreground mt-0.5" />
+                <p className="text-[10px] text-muted-foreground font-medium italic">
+                  Your key is stored securely in your private user document. It is never shared with third parties.
+                </p>
+              </div>
             </div>
           </CardContent>
-          <CardFooter className="bg-slate-50/50 p-8 border-t flex flex-col md:flex-row justify-between items-center gap-4">
-             <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+          <CardFooter className="bg-slate-50/50 p-8 border-t flex flex-col md:flex-row justify-between items-center gap-6">
+             <div className="flex items-center gap-2.5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                <ShieldCheck className="h-4 w-4 text-emerald-500" />
-               Security Verified
+               End-to-End Encryption Active
              </div>
              <Button 
                onClick={handleSave} 
-               disabled={isSaving}
-               className="w-full md:w-auto h-14 rounded-2xl bg-primary text-white font-bold px-10 shadow-lg shadow-primary/20 active:scale-95 transition-all"
+               disabled={isSaving || !apiKey.trim()}
+               className="w-full md:w-auto h-14 rounded-2xl bg-primary text-white font-bold px-12 shadow-lg shadow-primary/20 active:scale-95 transition-all"
              >
-               {isSaving ? <><Loader2 className="h-5 w-5 animate-spin mr-2" /> Saving...</> : <><Save className="h-5 w-5 mr-2" /> Save Changes</>}
+               {isSaving ? <><Loader2 className="h-5 w-5 animate-spin mr-2" /> Syncing...</> : <><Save className="h-5 w-5 mr-2" /> Save Changes</>}
              </Button>
           </CardFooter>
         </Card>

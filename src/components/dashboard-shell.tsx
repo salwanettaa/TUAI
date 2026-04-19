@@ -13,7 +13,7 @@ import {
   LogOut,
   User,
   Newspaper,
-  ChevronRight
+  Compass
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -36,6 +36,11 @@ const navItems = [
     title: "Overview",
     href: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Pathfinder",
+    href: "/dashboard/setup",
+    icon: Compass,
   },
   {
     title: "Scans",
@@ -152,7 +157,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
 
-        {/* Mobile Bottom Navigation - Improved for Mobile App Feel */}
+        {/* Mobile Bottom Navigation */}
         <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t flex md:hidden z-50 px-2 pb-safe-area-inset-bottom shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.2)]">
           {navItems.map((item) => (
             <Link 
@@ -164,12 +169,12 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               )}
             >
               <div className={cn(
-                "p-2 rounded-2xl transition-all duration-300",
+                "p-1.5 rounded-xl transition-all duration-300",
                 pathname === item.href ? "bg-primary/10 shadow-inner" : "bg-transparent"
               )}>
-                <item.icon className={cn("h-6 w-6", pathname === item.href ? "text-primary" : "text-slate-400")} />
+                <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-primary" : "text-slate-400")} />
               </div>
-              <span className={cn("text-[9px] font-bold uppercase tracking-tighter transition-opacity", pathname === item.href ? "opacity-100" : "opacity-60")}>
+              <span className={cn("text-[8px] font-bold uppercase tracking-tighter transition-opacity", pathname === item.href ? "opacity-100" : "opacity-60")}>
                 {item.title}
               </span>
             </Link>

@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,7 +16,8 @@ import {
   Activity,
   Newspaper,
   Globe,
-  Sparkles
+  Sparkles,
+  Compass
 } from "lucide-react"
 import Link from "next/link"
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
@@ -44,18 +44,18 @@ export default function DashboardPage() {
              <Sprout className="h-48 w-48" />
           </div>
           <div className="relative z-10 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold leading-tight">Selamat Pagi, Farmer Ahmad!</h2>
-            <p className="text-primary-foreground/80 max-w-[500px] text-lg font-medium">Your Padi fields in Selangor are showing healthy growth. Weather looks optimal for the next 48 hours.</p>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold leading-tight">Selamat Pagi, Farmer!</h2>
+            <p className="text-primary-foreground/80 max-w-[500px] text-lg font-medium">Your fields are monitored. Would you like to optimize your existing farm or start a new path to zero dependency?</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 mt-10 relative z-10">
-            <Link href="/dashboard/disease-scan">
+            <Link href="/dashboard/setup">
               <Button size="lg" className="bg-white text-primary hover:bg-white/90 rounded-2xl font-bold h-14 px-8 shadow-xl">
-                <Plus className="mr-2 h-5 w-5" /> New AI Diagnosis
+                <Compass className="mr-2 h-5 w-5" /> AI Pathfinder
               </Button>
             </Link>
-            <Link href="/dashboard/news">
+            <Link href="/dashboard/disease-scan">
               <Button size="lg" variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20 rounded-2xl font-bold h-14 px-8 backdrop-blur-sm">
-                <Newspaper className="mr-2 h-5 w-5" /> Global Intel
+                <Plus className="mr-2 h-5 w-5" /> New Diagnosis
               </Button>
             </Link>
           </div>
@@ -98,9 +98,9 @@ export default function DashboardPage() {
       {/* Critical Alerts */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
+          { icon: Compass, title: "Farmer Pathfinder", color: "primary", desc: "Guide your journey from 0 to hero or optimize needs.", link: "/dashboard/setup", label: "New Path" },
           { icon: ShieldAlert, title: "Export Ban Detected", color: "destructive", desc: "India has restricted fertilizer exports. Prices may surge soon.", link: "/dashboard/risk-intel", label: "Global Risk" },
           { icon: Newspaper, title: "AI News Briefing", color: "secondary", desc: "New report on Iran-US tensions and Malaysian food stages.", link: "/dashboard/news", label: "AI News" },
-          { icon: Sprout, title: "Treatment Due", color: "primary", desc: "Recommended fungal prevention for Block A scheduled for tomorrow.", link: "/dashboard/records", label: "Health" },
           { icon: AlertTriangle, title: "Price Surge Alert", color: "orange-500", desc: "Urea prices reported 12% higher at 3 nearby suppliers.", link: "/dashboard/suppliers", label: "Market" },
         ].map((alert, i) => (
           <Card key={i} className="rounded-[2rem] border-none shadow-lg hover:shadow-2xl transition-all group overflow-hidden bg-white">
@@ -169,14 +169,14 @@ export default function DashboardPage() {
              <CardContent className="px-8 md:p-10 pt-0">
                 <div className="space-y-4">
                   {[
+                    { title: "AI Planner: Roadmap Generated", date: "Just now", type: "setup", result: "Strategy Active" },
                     { title: "Disease Scan: Blast Disease", date: "2 hours ago", type: "scan", result: "Treatment Applied" },
                     { title: "Price Check: Fertilizer", date: "Yesterday", type: "market", result: "Supplier Found" },
-                    { title: "Policy Update: Fuel Subsidies", date: "2 days ago", type: "policy", result: "Subsidy Eligible" },
                   ].map((act, i) => (
                     <div key={i} className="flex items-center justify-between p-6 rounded-[2rem] bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100 group cursor-pointer shadow-sm hover:shadow-md">
                       <div className="flex items-center gap-5">
                         <div className="h-14 w-14 rounded-2xl bg-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                          {act.type === 'scan' ? <Sprout className="h-7 w-7 text-primary" /> : act.type === 'market' ? <TrendingUp className="h-7 w-7 text-orange-500" /> : <ShieldAlert className="h-7 w-7 text-blue-500" />}
+                          {act.type === 'scan' ? <Sprout className="h-7 w-7 text-primary" /> : act.type === 'market' ? <TrendingUp className="h-7 w-7 text-orange-500" /> : <Compass className="h-7 w-7 text-blue-500" />}
                         </div>
                         <div>
                           <div className="text-lg font-bold text-slate-800">{act.title}</div>
@@ -230,21 +230,21 @@ export default function DashboardPage() {
 
            <Card className="rounded-[3rem] shadow-2xl border-none bg-white overflow-hidden p-8">
              <CardHeader className="px-0 pt-0">
-                <CardTitle className="text-2xl font-headline font-bold text-slate-900">Quick Resource Finder</CardTitle>
-                <CardDescription className="text-sm font-medium text-slate-500">AI finds the nearest authorized suppliers</CardDescription>
+                <CardTitle className="text-2xl font-headline font-bold text-slate-900">Pathfinder Tools</CardTitle>
+                <CardDescription className="text-sm font-medium text-slate-500">AI-driven planning and land scouting</CardDescription>
              </CardHeader>
              <CardContent className="px-0 pb-0 grid grid-cols-2 gap-4">
-                <Link href="/dashboard/suppliers?q=fertilizer" className="p-6 rounded-[2rem] bg-slate-50 hover:bg-primary hover:text-white transition-all text-center group shadow-sm hover:shadow-xl hover:-translate-y-2">
+                <Link href="/dashboard/setup" className="p-6 rounded-[2rem] bg-slate-50 hover:bg-primary hover:text-white transition-all text-center group shadow-sm hover:shadow-xl hover:-translate-y-2">
+                  <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:bg-white/20">
+                    <Compass className="h-6 w-6 text-primary group-hover:text-white transition-colors" />
+                  </div>
+                  <span className="text-sm font-black uppercase tracking-tighter">Pathfinder</span>
+                </Link>
+                <Link href="/dashboard/suppliers" className="p-6 rounded-[2rem] bg-slate-50 hover:bg-primary hover:text-white transition-all text-center group shadow-sm hover:shadow-xl hover:-translate-y-2">
                   <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:bg-white/20">
                     <MapPin className="h-6 w-6 text-primary group-hover:text-white transition-colors" />
                   </div>
-                  <span className="text-sm font-black uppercase tracking-tighter">Fertilizer</span>
-                </Link>
-                <Link href="/dashboard/suppliers?q=seeds" className="p-6 rounded-[2rem] bg-slate-50 hover:bg-primary hover:text-white transition-all text-center group shadow-sm hover:shadow-xl hover:-translate-y-2">
-                  <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:bg-white/20">
-                    <Sprout className="h-6 w-6 text-primary group-hover:text-white transition-colors" />
-                  </div>
-                  <span className="text-sm font-black uppercase tracking-tighter">Seeds</span>
+                  <span className="text-sm font-black uppercase tracking-tighter">Suppliers</span>
                 </Link>
              </CardContent>
            </Card>

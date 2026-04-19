@@ -5,6 +5,7 @@
 export async function sendEmailOtp(toEmail: string, otp: string) {
   const apiKey = process.env.BREVO_API_KEY;
   const senderEmail = process.env.BREVO_SENDER_EMAIL || 'ericksurbakti39@gmail.com';
+  const senderName = process.env.BREVO_SENDER_NAME || 'TUAI - Your PlantBot Friends';
 
   if (!apiKey) {
     console.error('Brevo API key missing in environment variables.');
@@ -20,24 +21,28 @@ export async function sendEmailOtp(toEmail: string, otp: string) {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        sender: { email: senderEmail, name: 'TUAI Smart Agriculture' },
+        sender: { email: senderEmail, name: senderName },
         to: [{ email: toEmail }],
         subject: `${otp} is your TUAI Access Code`,
         htmlContent: `
           <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; background-color: #f9f9f9;">
-            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.05);">
-              <div style="background-color: #205b5a; padding: 30px; text-align: center;">
-                <h1 style="color: #ffffff; margin: 0; font-size: 28px; letter-spacing: 2px;">TUAI</h1>
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
+              <div style="background-color: #205b5a; padding: 40px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 32px; letter-spacing: 4px; font-weight: 800;">TUAI</h1>
+                <p style="color: #ffffff; opacity: 0.8; margin-top: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Intelligent Agriculture</p>
               </div>
-              <div style="padding: 40px; text-align: center;">
-                <h2 style="color: #333333; font-size: 20px; margin-bottom: 20px;">Verification Code</h2>
-                <p style="color: #666666; font-size: 16px; margin-bottom: 30px;">Please use the following 6-digit code to complete your login or registration.</p>
-                <div style="background-color: #f0f4f4; border-radius: 12px; padding: 20px; font-size: 36px; font-weight: bold; letter-spacing: 12px; color: #205b5a; display: inline-block;">
+              <div style="padding: 50px; text-align: center;">
+                <h2 style="color: #1a1a1a; font-size: 24px; margin-bottom: 16px; font-weight: 700;">Verification Code</h2>
+                <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 40px;">Hello Farmer! Use the code below to securely access your TUAI dashboard. This code is valid for 10 minutes.</p>
+                <div style="background-color: #f0f7f7; border: 2px dashed #205b5a; border-radius: 20px; padding: 25px; font-size: 42px; font-weight: 800; letter-spacing: 15px; color: #205b5a; display: inline-block;">
                   ${otp}
                 </div>
-                <p style="color: #999999; font-size: 12px; margin-top: 40px;">This code will expire in 10 minutes. If you did not request this, please ignore this email.</p>
+                <div style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee;">
+                  <p style="color: #999999; font-size: 12px; line-height: 1.5;">If you didn't request this code, you can safely ignore this email. Someone might have typed your email address by mistake.</p>
+                </div>
               </div>
-              <div style="background-color: #f4f4f4; padding: 20px; text-align: center; color: #999999; font-size: 12px;">
+              <div style="background-color: #fbfbfb; padding: 30px; text-align: center; color: #aaaaaa; font-size: 11px; letter-spacing: 0.5px;">
+                Sent with ❤️ from <b>TUAI - Your PlantBot Friends</b><br/>
                 © 2024 TUAI Agriculture Intelligence. All Rights Reserved.
               </div>
             </div>
